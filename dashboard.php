@@ -45,7 +45,7 @@ require_capability('block/behaviour:view', $context);
 // Was script called with course id where plugin is not installed?
 if (!block_behaviour_is_installed($course->id)) {
 
-    redirect(new moodle_url('/course/view.php', array('id' => $course->id)));
+    redirect(new moodle_url('/course/view.php', ['id' => $course->id]));
     die();
 }
 
@@ -178,7 +178,7 @@ if ($download === 1 && $filename !== '') {
     die();
 }
 
-$out = array(
+$out = [
     'table' => $table,
     'membermap' => $membermap,
     'namemap' => $namemap,
@@ -200,15 +200,15 @@ $out = array(
     'showbfiradar' => $showbfiradar,
     'lsdata' => $lsdata,
     'lsdata2' => $lsdata2,
-);
+];
 
 // Set up the page.
-$PAGE->set_url('/blocks/behaviour/dashboard.php', array('id' => $course->id, 'names' => $shownames));
+$PAGE->set_url('/blocks/behaviour/dashboard.php', ['id' => $course->id, 'names' => $shownames]);
 $PAGE->set_title(get_string('title', 'block_behaviour'));
 
 // JavaScript.
 $PAGE->requires->js_call_amd('block_behaviour/dashboard-modules', 'init');
-$PAGE->requires->js_init_call('waitForModules', array($out), true);
+$PAGE->requires->js_init_call('waitForModules', [$out], true);
 $PAGE->requires->js('/blocks/behaviour/javascript/dashboard.js');
 
 // Finish setting up page.
@@ -220,84 +220,84 @@ echo $OUTPUT->header();
 
 // Dashboard links.
 $spc = '&nbsp&nbsp&nbsp';
-$out = html_writer::tag('a', get_string('selectgraph', 'block_behaviour'), array(
-    'href' => new moodle_url('#', array(
+$out = html_writer::tag('a', get_string('selectgraph', 'block_behaviour'), [
+    'href' => new moodle_url('#', [
         'id' => $course->id,
         'names' => $shownames,
-        'type' => 0
-    ))
-));
+        'type' => 0,
+    ]),
+]);
 $out .= $spc;
 
-$out .= html_writer::tag('a', get_string('graphsummary', 'block_behaviour'), array(
-    'href' => new moodle_url('#', array(
+$out .= html_writer::tag('a', get_string('graphsummary', 'block_behaviour'), [
+    'href' => new moodle_url('#', [
         'id' => $course->id,
         'names' => $shownames,
-        'type' => 1
-    ))
-));
+        'type' => 1,
+    ]),
+]);
 $out .= $spc;
 
-$out .= html_writer::tag('a', get_string('itersummary', 'block_behaviour'), array(
-    'href' => new moodle_url('#', array(
+$out .= html_writer::tag('a', get_string('itersummary', 'block_behaviour'), [
+    'href' => new moodle_url('#', [
         'id' => $course->id,
         'names' => $shownames,
-        'type' => 2
-    ))
-));
+        'type' => 2,
+    ]),
+]);
 $out .= $spc;
 
-$out .= html_writer::tag('a', get_string('surveylink', 'block_behaviour'), array(
-    'href' => new moodle_url('#', array(
+$out .= html_writer::tag('a', get_string('surveylink', 'block_behaviour'), [
+    'href' => new moodle_url('#', [
         'id' => $course->id,
         'names' => $shownames,
-        'type' => 3
-    ))
-));
+        'type' => 3,
+    ]),
+]);
 $out .= $spc;
 
 if ($DB->record_exists('block_behaviour_psg_log', ['courseid' => $course->id])) {
-    $out .= html_writer::tag('a', get_string('psgdetaillink', 'block_behaviour'), array(
-        'href' => new moodle_url('#', array(
+    $out .= html_writer::tag('a', get_string('psgdetaillink', 'block_behaviour'), [
+        'href' => new moodle_url('#', [
             'id' => $course->id,
             'names' => $shownames,
-            'type' => 7
-        ))
-    ));
+            'type' => 7,
+        ]),
+    ]);
     $out .= $spc;
 
-    $out .= html_writer::tag('a', get_string('psgsummarylink', 'block_behaviour'), array(
-        'href' => new moodle_url('#', array(
+    $out .= html_writer::tag('a', get_string('psgsummarylink', 'block_behaviour'), [
+        'href' => new moodle_url('#', [
             'id' => $course->id,
             'names' => $shownames,
-            'type' => 8
-        ))
-    ));
+            'type' => 8,
+        ]),
+    ]);
     $out .= $spc;
 }
 
 if ($course->format == 'psg') {
-    $out .= html_writer::tag('a', get_string('lsoflolink', 'block_behaviour'), array(
-        'href' => new moodle_url('#', array(
+    $out .= html_writer::tag('a', get_string('lsoflolink', 'block_behaviour'), [
+        'href' => new moodle_url('#', [
             'id' => $course->id,
             'names' => $shownames,
-            'type' => 9
-        ))
-    ));
+            'type' => 9,
+        ]),
+    ]);
     $out .= $spc;
 }
 
 if ($showdownload) {
-    $out .= html_writer::tag('a', get_string('downloaddata', 'block_behaviour'), array(
-        'href' => new moodle_url('#', array(
+    $out .= html_writer::tag('a', get_string('downloaddata', 'block_behaviour'), [
+        'href' => new moodle_url('#', [
             'id' => $course->id,
             'names' => $shownames,
             'type' => $type === 0 ? 1 : $type,
             'download' => 1,
             'selected' => implode('-', $selected),
             'surveyid' => $surveyid,
-        ))
-    ));
+        ]),
+    ]);
 }
 
 echo html_writer::div($out, '', ['style' => 'text-align: center;', 'id' => 'header-links']);
@@ -307,13 +307,13 @@ if ($displayselectform) {
 } else {
     if ($surveyoverview) {
         echo html_writer::tag('h3', get_string('surveylink', 'block_behaviour'));
-        echo html_writer::tag('a', get_string('newsurvey', 'block_behaviour'), array(
-            'href' => new moodle_url('#', array(
+        echo html_writer::tag('a', get_string('newsurvey', 'block_behaviour'), [
+            'href' => new moodle_url('#', [
                 'id' => $course->id,
                 'names' => $shownames,
-                'type' => 5
-            )),
-        ));
+                'type' => 5,
+            ]),
+        ]);
     } else if ($showlsradar || $showbfiradar) {
         echo html_writer::div('', '', ['id' => 'lsradar']);
 

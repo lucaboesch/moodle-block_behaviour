@@ -43,9 +43,9 @@ if (!block_behaviour_is_installed($course->id)) {
 }
 
 // Get all the data records for this data set.
-$records = $DB->get_records('block_behaviour_imported', array(
-    'courseid' => $course->id
-), 'userid, time');
+$records = $DB->get_records('block_behaviour_imported', [
+    'courseid' => $course->id,
+], 'userid, time');
 $obs = [];
 $unique = [];
 $debug = '';
@@ -124,7 +124,7 @@ $config['nodeR'] = 10;
 $config['links'] = $links;
 
 // Set up the page.
-$PAGE->set_url('/blocks/behaviour/lsa/index.php', array('id' => $course->id));
+$PAGE->set_url('/blocks/behaviour/lsa/index.php', ['id' => $course->id]);
 $PAGE->set_title(get_string('title', 'block_behaviour'));
 
 // JavaScript.
@@ -132,11 +132,11 @@ if ($type == 0) {
     $PAGE->requires->css('/blocks/behaviour/lsa/d3network.css');
     $PAGE->requires->js('/blocks/behaviour/lsa/d3network1.js');
     $PAGE->requires->js('/blocks/behaviour/lsa/d3.v3.min.js');
-    $PAGE->requires->js_init_call('d3network', array($config), true);
+    $PAGE->requires->js_init_call('d3network', [$config], true);
 } else if ($type == 1) {
     $PAGE->requires->js_call_amd('block_behaviour/modules', 'init');
     $PAGE->requires->js('/blocks/behaviour/lsa/d3network2.js');
-    $PAGE->requires->js_init_call('waitForD3', array($config), true);
+    $PAGE->requires->js_init_call('waitForD3', [$config], true);
 }
 
 // Finish setting up page.

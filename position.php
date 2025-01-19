@@ -41,12 +41,12 @@ require_capability('block/behaviour:view', $context);
 // Was script called with course id where plugin is not installed?
 if (!block_behaviour_is_installed($course->id)) {
 
-    redirect(new moodle_url('/course/view.php', array('id' => $course->id)));
+    redirect(new moodle_url('/course/view.php', ['id' => $course->id]));
     die();
 }
 
 // Trigger a behaviour analytics viewed event.
-$event = \block_behaviour\event\behaviour_viewed::create(array('context' => $context));
+$event = \block_behaviour\event\behaviour_viewed::create(['context' => $context]);
 $event->trigger();
 
 // Some values needed here.
@@ -74,9 +74,9 @@ if ($gotallnodes) {
 }
 
 // If doing resource node configuration.
-$out = array(
+$out = [
     'logs'        => [],
-    'users'       => [ array('id' => 0) ],
+    'users'       => [ ['id' => 0] ],
     'mods'        => $mods,
     'panelwidth'  => $panelwidth,
     'legendwidth' => $legendwidth,
@@ -98,7 +98,7 @@ $out = array(
     'commentsscript' => (string) new moodle_url('/blocks/behaviour/update-comments.php'),
     'manualscript'   => (string) new moodle_url('/blocks/behaviour/update-manual-clusters.php'),
     'iframeurl'      => (string) new moodle_url('/'),
-);
+];
 
 // If user is researcher, get all graph configurations for this course.
 if (get_config('block_behaviour', 'c_'.$course->id.'_p_'.$USER->id)) {
@@ -111,7 +111,7 @@ if (get_config('block_behaviour', 'c_'.$course->id.'_p_'.$USER->id)) {
     $modules = [];
     $setnames = [];
 
-    $users = $DB->get_records('block_behaviour_coords', array('courseid' => $course->id), '', 'distinct userid');
+    $users = $DB->get_records('block_behaviour_coords', ['courseid' => $course->id], '', 'distinct userid');
 
     foreach ($users as $user) {
 
@@ -137,7 +137,7 @@ if (get_config('block_behaviour', 'c_'.$course->id.'_p_'.$USER->id)) {
         $modules[$user->userid] = $mods;
 
         // Get the user's username.
-        $r = $DB->get_record('user', array('id' => $user->userid));
+        $r = $DB->get_record('user', ['id' => $user->userid]);
         $names[$user->userid] = $r->firstname . ' ' . $r->lastname;
         $setnames[$user->userid] = $course->shortname;
     }
@@ -147,7 +147,7 @@ if (get_config('block_behaviour', 'c_'.$course->id.'_p_'.$USER->id)) {
         $scales[$USER->id]  = 1.0;
         $changes[$USER->id] = 0;
         $modules[$USER->id] = $mods;
-        $names[$USER->id] = $DB->get_field('user', 'username', array('id' => $USER->id));
+        $names[$USER->id] = $DB->get_field('user', 'username', ['id' => $USER->id]);
         $setnames[$USER->id] = $course->shortname;
     }
 
@@ -162,16 +162,16 @@ if (get_config('block_behaviour', 'c_'.$course->id.'_p_'.$USER->id)) {
 }
 
 // Set up the page.
-$PAGE->set_url('/blocks/behaviour/position.php', array(
+$PAGE->set_url('/blocks/behaviour/position.php', [
     'id' => $course->id,
     'names' => $shownames,
-    'uselsa' => $linkuselsa
-));
+    'uselsa' => $linkuselsa,
+]);
 $PAGE->set_title(get_string('title', 'block_behaviour'));
 
 // JavaScript.
 $PAGE->requires->js_call_amd('block_behaviour/modules', 'init');
-$PAGE->requires->js_init_call('waitForModules', array($out), true);
+$PAGE->requires->js_init_call('waitForModules', [$out], true);
 $PAGE->requires->js('/blocks/behaviour/javascript/main.js');
 
 // Finish setting up page.

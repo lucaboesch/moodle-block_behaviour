@@ -51,7 +51,7 @@ require_capability('block/behaviour:view', $context);
 // Was script called with course id where plugin is not installed?
 if (!block_behaviour_is_installed($course->id)) {
 
-    redirect(new moodle_url('/course/view.php', array('id' => $courseid)));
+    redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
     die();
 }
 
@@ -66,37 +66,37 @@ $coordsid = $nodedata->time;
 
 foreach ($nodedata->nodes as $key => $value) {
 
-    $data[] = (object) array(
+    $data[] = (object) [
         'courseid' => $courseid,
         'userid'   => $userid,
         'changed'  => $coordsid,
         'moduleid' => $key,
         'xcoord'   => $value->xcoord,
         'ycoord'   => $value->ycoord,
-        'visible'  => $value->visible
-    );
+        'visible'  => $value->visible,
+    ];
 
     // Copy nodes for use in centroid calculations.
-    $nds[$key] = array(
+    $nds[$key] = [
         'xcoord'   => $value->xcoord,
         'ycoord'   => $value->ycoord,
-        'visible'  => $value->visible
-    );
+        'visible'  => $value->visible,
+    ];
 }
 // Store new node coordinates.
 $DB->insert_records('block_behaviour_coords', $data);
 
-$DB->insert_record('block_behaviour_scales', (object) array(
+$DB->insert_record('block_behaviour_scales', (object) [
     'courseid' => $courseid,
     'userid'   => $userid,
     'coordsid' => $coordsid,
-    'scale'    => $scale
-));
+    'scale'    => $scale,
+]);
 
 if (isset($nodedata->links)) {
     $data = [];
     foreach ($nodedata->links as $link) {
-        $data[] = (object) array(
+        $data[] = (object) [
             'courseid'  => $courseid,
             'userid'    => $userid,
             'coordsid'  => $coordsid,
@@ -105,7 +105,7 @@ if (isset($nodedata->links)) {
             'value'     => $link->value,
             'frequency' => $link->frequency,
             'studentids' => $link->studentids,
-        );
+        ];
     }
     $DB->insert_records('block_behaviour_lsa_links', $data);
 }

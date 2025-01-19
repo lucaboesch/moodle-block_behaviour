@@ -46,7 +46,7 @@ class increment_logs_schedule extends \core\task\scheduled_task {
 
     /**
      * Debugging flag
-     * @var boolean $dodebug
+     * @var bool $dodebug
      */
     private static $dodebug = false;
 
@@ -116,11 +116,11 @@ class increment_logs_schedule extends \core\task\scheduled_task {
 
         if ($updatesynctime) {
             // Update last sync time.
-            $DB->update_record('block_behaviour_installed', (object) array(
+            $DB->update_record('block_behaviour_installed', (object) [
                 'id'       => $course->id,
                 'courseid' => $course->courseid,
-                'lastsync' => $now
-            ));
+                'lastsync' => $now,
+            ]);
         }
     }
 
@@ -182,11 +182,11 @@ class increment_logs_schedule extends \core\task\scheduled_task {
                    AND timecreated > :lastsync
               ORDER BY userid, timecreated";
 
-        $params = array(
+        $params = [
             'courseid'      => $course->courseid,
             'contextmodule' => CONTEXT_MODULE,
-            'lastsync'      => $course->lastsync
-        );
+            'lastsync'      => $course->lastsync,
+        ];
         $params = array_merge($params, $inparams);
 
         return $DB->get_records_sql($sql, $params);
@@ -203,12 +203,12 @@ class increment_logs_schedule extends \core\task\scheduled_task {
         global $DB;
 
         // Get teachers for this course who have graph configurations.
-        $params = array('courseid' => $course->courseid);
+        $params = ['courseid' => $course->courseid];
         $teacherids = $DB->get_records('block_behaviour_coords', $params, '', 'distinct userid');
 
         // Pull graph configurations from LORD tables as well, if installed.
         $lordinstalled = false;
-        $lordparams = array('courseid' => $course->courseid);
+        $lordparams = ['courseid' => $course->courseid];
 
         if ($DB->record_exists('block', ['name' => 'lord'])) {
             $lordinstalled = true;
@@ -301,10 +301,10 @@ class increment_logs_schedule extends \core\task\scheduled_task {
                     self::dbug($value->moduleid . ' ' . $value->visible);
 
                     if (intval($value->visible)) {
-                        $modcoords[$tid->userid][$coordid->coordsid][$value->moduleid] = array(
+                        $modcoords[$tid->userid][$coordid->coordsid][$value->moduleid] = [
                             'x' => $value->xcoord,
-                            'y' => $value->ycoord
-                        );
+                            'y' => $value->ycoord,
+                        ];
 
                         self::dbug($value->xcoord . ' ' . $value->ycoord);
                     }
@@ -334,12 +334,12 @@ class increment_logs_schedule extends \core\task\scheduled_task {
         foreach ($logs as $log) {
 
             // Basic log info for imported table.
-            $data[] = (object) array(
+            $data[] = (object) [
                 "courseid" => $course->courseid,
                 "moduleid" => $log->contextinstanceid,
                 "userid"   => $log->userid,
-                "time"     => $log->timecreated
-            );
+                "time"     => $log->timecreated,
+            ];
 
             $student = $log->userid;
             $modid = $log->contextinstanceid;
@@ -402,12 +402,12 @@ class increment_logs_schedule extends \core\task\scheduled_task {
 
                     self::dbug('Centroid ' . $teacher . ' ' . $coordid . ' ' . $student);
 
-                    $params = array(
+                    $params = [
                         'courseid'  => $course->courseid,
                         'userid'    => $teacher,
                         'coordsid'  => $coordid,
-                        'studentid' => $student
-                    );
+                        'studentid' => $student,
+                    ];
 
                     $result = $DB->get_record('block_behaviour_centroids', $params);
                     if ($result) {
@@ -446,7 +446,7 @@ class increment_logs_schedule extends \core\task\scheduled_task {
 
         // Get all student's access logs.
         $logs = $DB->get_records('block_behaviour_imported',
-            array('courseid' => $course->courseid), 'userid, time');
+            ['courseid' => $course->courseid], 'userid, time');
 
         // For each teacher and graph configuration, do each student's centroid.
         foreach ($modcoords as $teacher => $coordids) {
@@ -502,12 +502,12 @@ class increment_logs_schedule extends \core\task\scheduled_task {
             return;
         }
 
-        $params = array(
+        $params = [
             'courseid'  => $course->courseid,
             'userid'    => $teacher,
             'coordsid'  => $coordid,
-            'studentid' => $studentid
-        );
+            'studentid' => $studentid,
+        ];
 
         $result = $DB->get_record('block_behaviour_centres', $params);
 
@@ -559,11 +559,11 @@ class increment_logs_schedule extends \core\task\scheduled_task {
         global $DB;
 
         // Get the different graph configurations for this course and user.
-        $params = array(
+        $params = [
             'courseid'  => $courseid,
             'userid'    => $teacher,
-            'iteration' => -1
-        );
+            'iteration' => -1,
+        ];
         $coordids = $DB->get_records('block_behaviour_clusters', $params, '', 'distinct coordsid');
 
         self::dbug("Update clusters: ".$courseid." ".$teacher." ".count($coordids));
@@ -687,10 +687,10 @@ class increment_logs_schedule extends \core\task\scheduled_task {
         $clusteroids = [];
         reset($clusters);
         foreach ($clusters as $clustr) {
-            $clusteroids[$clustr->clusternum] = array(
+            $clusteroids[$clustr->clusternum] = [
                 'x' => $clustr->centroidx,
-                'y' => $clustr->centroidy
-            );
+                'y' => $clustr->centroidy,
+            ];
         }
         unset($clustr);
 
@@ -737,10 +737,10 @@ class increment_logs_schedule extends \core\task\scheduled_task {
             }
             // Assign student to new cluster.
             $newclusters[$clusternum][] = $centroid;
-            $newmembers[$centroid->studentid] = array(
+            $newmembers[$centroid->studentid] = [
                 'x' => $centroid->centroidx,
-                'y' => $centroid->centroidy
-            );
+                'y' => $centroid->centroidy,
+            ];
         }
 
         return [$newclusters, $newmembers, $clusteroids];
@@ -777,7 +777,7 @@ class increment_logs_schedule extends \core\task\scheduled_task {
                 $n++;
 
                 // Data for members table.
-                $memberdata[] = (object) array(
+                $memberdata[] = (object) [
                     'courseid'   => $params['courseid'],
                     'userid'     => $params['userid'],
                     'coordsid'   => $params['coordsid'],
@@ -786,8 +786,8 @@ class increment_logs_schedule extends \core\task\scheduled_task {
                     'clusternum' => $clusternum,
                     'studentid'  => $member->studentid,
                     'centroidx'  => $member->centroidx,
-                    'centroidy'  => $member->centroidy
-                );
+                    'centroidy'  => $member->centroidy,
+                ];
             }
 
             // Might not be any members in the cluster.
@@ -831,10 +831,10 @@ class increment_logs_schedule extends \core\task\scheduled_task {
             // Store the new clustering centroid coordinates.
             $x = $tx / $n;
             $y = $ty / $n;
-            $newclusteroids[$clusternum] = array('x' => $x, 'y' => $y);
+            $newclusteroids[$clusternum] = ['x' => $x, 'y' => $y];
 
             // Data for clusters table.
-            $clusterdata[] = (object) array(
+            $clusterdata[] = (object) [
                 'courseid'     => $params['courseid'],
                 'userid'       => $params['userid'],
                 'coordsid'     => $params['coordsid'],
@@ -843,8 +843,8 @@ class increment_logs_schedule extends \core\task\scheduled_task {
                 'clusternum'   => $clusternum,
                 'centroidx'    => $x,
                 'centroidy'    => $y,
-                'usegeometric' => $usegeo
-            );
+                'usegeometric' => $usegeo,
+            ];
         }
 
         return [$memberdata, $clusterdata, $redoiteration, $newclusteroids];
@@ -932,7 +932,7 @@ class increment_logs_schedule extends \core\task\scheduled_task {
                                         $min = $w;
                                     }
                                 }
-                                $commondata[] = (object) array(
+                                $commondata[] = (object) [
                                     'courseid' => $cid,
                                     'userid' => $tid,
                                     'coordsid' => $crdid,
@@ -940,8 +940,8 @@ class increment_logs_schedule extends \core\task\scheduled_task {
                                     'iteration' => $iteration,
                                     'clusternum' => $cnum,
                                     'link' => $l,
-                                    'weight' => $min
-                                );
+                                    'weight' => $min,
+                                ];
                             }
                         }
                     }

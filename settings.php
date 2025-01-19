@@ -141,7 +141,7 @@ if ($ADMIN->fulltree) {
         $users = $DB->get_records_sql($sql, $inparams);
 
         // Parameters for get_string() call.
-        $params = array('coursename' => $course->shortname);
+        $params = ['coursename' => $course->shortname];
 
         // Process users.
         foreach ($users as $user) {

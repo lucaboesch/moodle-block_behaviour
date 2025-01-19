@@ -39,11 +39,11 @@ $context = context_course::instance($course->id);
 require_capability('block/behaviour:export', $context);
 
 // Set up the page.
-$PAGE->set_url('/blocks/behaviour/delete-data.php', array(
+$PAGE->set_url('/blocks/behaviour/delete-data.php', [
     'id' => $course->id,
     'names' => $shownames,
-    'uselsa' => $uselsa
-));
+    'uselsa' => $uselsa,
+]);
 $PAGE->set_title(get_string('pluginname', 'block_behaviour'));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading($course->fullname);
@@ -54,7 +54,7 @@ $mform = new block_behaviour_delete_form();
 $toform = [
     'id' => $course->id,
     'names' => $shownames,
-    'uselsa' => $uselsa
+    'uselsa' => $uselsa,
 ];
 $mform->set_data($toform);
 
@@ -68,9 +68,9 @@ if ($mform->is_cancelled()) {
 } else if ($formdata = $mform->get_data()) {
     // Handle submitted form.
 
-    $params = array(
-        'courseid' => $course->id
-    );
+    $params = [
+        'courseid' => $course->id,
+    ];
 
     // Delete clustering data.
     if ($formdata->del_cluster) {
@@ -97,12 +97,12 @@ if ($mform->is_cancelled()) {
         $DB->delete_records('block_behaviour_imported', $params);
 
         $rec = $DB->get_record('block_behaviour_installed', $params);
-        $DB->update_record('block_behaviour_installed', array(
+        $DB->update_record('block_behaviour_installed', [
             'id' => $rec->id,
             'courseid' => $rec->courseid,
             'lastsync' => 0,
-            'importresult' => ''
-        ));
+            'importresult' => '',
+        ]);
     }
 
     redirect($url);

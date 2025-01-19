@@ -43,18 +43,18 @@ require_capability('block/behaviour:view', $context);
 // Was script called with course id where plugin is not installed?
 if (!block_behaviour_is_installed($course->id)) {
 
-    redirect(new moodle_url('/course/view.php', array('id' => $courseid)));
+    redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
     die();
 }
 
-$result = $DB->get_record('block_behaviour_installed', array('courseid'  => $courseid));
+$result = $DB->get_record('block_behaviour_installed', ['courseid'  => $courseid]);
 
 // Remove last import result.
-$DB->update_record('block_behaviour_installed', (object) array(
+$DB->update_record('block_behaviour_installed', (object) [
     'id'           => $result->id,
     'courseid'     => $result->courseid,
     'lastsync'     => $result->lastsync,
-    'importresult' => ''
-));
+    'importresult' => '',
+]);
 
 die($result->importresult);

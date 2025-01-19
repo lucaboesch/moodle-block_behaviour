@@ -51,7 +51,7 @@ class provider implements
      * @param collection $collection The initialised collection to add items to.
      * @return collection A listing of user data stored through this system.
      */
-    public static function get_metadata(collection $collection) : collection {
+    public static function get_metadata(collection $collection): collection {
 
         $collection->add_database_table(
             'block_behaviour_imported',
@@ -198,7 +198,7 @@ class provider implements
             [
                 'courseid'  => 'privacy:metadata:block_behaviour:courseid',
                 'userid'    => 'privacy:metadata:block_behaviour:userid',
-                'studyid'   => 'privacy:metadata:block_behaviour:studyid'
+                'studyid'   => 'privacy:metadata:block_behaviour:studyid',
             ],
             'privacy:metadata:block_behaviour_studyids'
         );
@@ -281,7 +281,7 @@ class provider implements
      * @param int $userid The user to search.
      * @return contextlist The contextlist containing the list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid(int $userid) : contextlist {
+    public static function get_contexts_for_userid(int $userid): contextlist {
 
         $contextlist = new \core_privacy\local\request\contextlist();
 
@@ -294,7 +294,7 @@ class provider implements
 
         $params = [
             'context' => CONTEXT_COURSE,
-            'userid'  => $userid
+            'userid'  => $userid,
         ];
 
         $contextlist->add_from_sql($sql, $params);

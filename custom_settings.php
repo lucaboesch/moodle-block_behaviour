@@ -37,7 +37,7 @@ $context = context_course::instance($course->id);
 require_capability('block/lord:view', $context);
 
 // Set up the page.
-$PAGE->set_url('/blocks/behaviour/custom_settings.php', array('id' => $course->id));
+$PAGE->set_url('/blocks/behaviour/custom_settings.php', ['id' => $course->id]);
 $PAGE->set_title(get_string('pluginname', 'block_behaviour'));
 $PAGE->set_pagelayout('standard');
 $PAGE->set_heading($course->fullname);
@@ -59,10 +59,10 @@ if ($mform->is_cancelled()) {
     // Handle submitted form.
 
     // Get custom settings, if exist.
-    $params = array(
+    $params = [
         'courseid' => $course->id,
-        'userid' => $USER->id
-    );
+        'userid' => $USER->id,
+    ];
     $record = $DB->get_record('block_behaviour_lord_options', $params);
 
     $params['uselord'] = intval($fromform->use_lord);

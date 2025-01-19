@@ -59,7 +59,7 @@ function xmldb_block_behaviour_upgrade($oldversion) {
         $table->add_field('studyid', XMLDB_TYPE_CHAR, '12', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table block_behaviour_studyids.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for block_behaviour_studyids.
         if (!$dbman->table_exists($table)) {
@@ -76,7 +76,7 @@ function xmldb_block_behaviour_upgrade($oldversion) {
         $table->add_field('usecustom', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table block_behaviour_studyids.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for block_behaviour_studyids.
         if (!$dbman->table_exists($table)) {
@@ -97,7 +97,7 @@ function xmldb_block_behaviour_upgrade($oldversion) {
         $table->add_field('title', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table block_behaviour_surveys.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for block_behaviour_surveys.
         if (!$dbman->table_exists($table)) {
@@ -115,7 +115,7 @@ function xmldb_block_behaviour_upgrade($oldversion) {
         $table->add_field('ordering', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table block_behaviour_survey_qs.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for block_behaviour_survey_qs.
         if (!$dbman->table_exists($table)) {
@@ -132,7 +132,7 @@ function xmldb_block_behaviour_upgrade($oldversion) {
         $table->add_field('text', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table block_behaviour_survey_opts.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for block_behaviour_survey_opts.
         if (!$dbman->table_exists($table)) {
@@ -158,7 +158,7 @@ function xmldb_block_behaviour_upgrade($oldversion) {
         $table->add_field('response', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table block_behaviour_survey_rsps.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for block_behaviour_survey_rsps.
         if (!$dbman->table_exists($table)) {
@@ -173,64 +173,64 @@ function xmldb_block_behaviour_upgrade($oldversion) {
     if ($oldversion < 2021101304) {
 
         // Felder and Soloman ILS.
-        $params = array(
-            'title' => get_string('ilstitle', 'block_behaviour')
-        );
+        $params = [
+            'title' => get_string('ilstitle', 'block_behaviour'),
+        ];
         $sid = $DB->insert_record('block_behaviour_surveys', $params);
 
         $options = [];
 
         for ($i = 1; $i <= 44; $i++) {
-            $params = array(
+            $params = [
                 'survey' => $sid,
                 'qtype' => 'binary',
                 'qtext' => get_string('ilsq' . $i, 'block_behaviour'),
-                'ordering' => $i
-            );
+                'ordering' => $i,
+            ];
             $qid = $DB->insert_record('block_behaviour_survey_qs', $params);
             for ($j = 0; $j < 2; $j++) {
-                $options[] = (object) array(
+                $options[] = (object) [
                     'question' => $qid,
                     'ordering' => $j,
-                    'text' => get_string('ilsq' . $i . 'a' . $j, 'block_behaviour')
-                );
+                    'text' => get_string('ilsq' . $i . 'a' . $j, 'block_behaviour'),
+                ];
             }
         }
         $DB->insert_records('block_behaviour_survey_opts', $options);
 
         // System Usability Scale.
-        $params = array(
-            'title' => get_string('sustitle', 'block_behaviour')
-        );
+        $params = [
+            'title' => get_string('sustitle', 'block_behaviour'),
+        ];
         $sid = $DB->insert_record('block_behaviour_surveys', $params);
 
         $questions = [];
 
         for ($i = 1; $i <= 10; $i++) {
-            $questions[] = (object) array(
+            $questions[] = (object) [
                 'survey' => $sid,
                 'qtype' => 'likert',
                 'qtext' => get_string('susq' . $i, 'block_behaviour'),
-                'ordering' => $i
-            );
+                'ordering' => $i,
+            ];
         }
         $DB->insert_records('block_behaviour_survey_qs', $questions);
 
         // Big Five Inventory v.1.
-        $params = array(
-            'title' => get_string('bfi1title', 'block_behaviour')
-        );
+        $params = [
+            'title' => get_string('bfi1title', 'block_behaviour'),
+        ];
         $sid = $DB->insert_record('block_behaviour_surveys', $params);
 
         $questions = [];
 
         for ($i = 1; $i <= 44; $i++) {
-            $questions[] = (object) array(
+            $questions[] = (object) [
                 'survey' => $sid,
                 'qtype' => 'likert',
                 'qtext' => get_string('bfi1q' . $i, 'block_behaviour'),
-                'ordering' => $i
-            );
+                'ordering' => $i,
+            ];
         }
         $DB->insert_records('block_behaviour_survey_qs', $questions);
 
@@ -254,7 +254,7 @@ function xmldb_block_behaviour_upgrade($oldversion) {
         $table->add_field('link', XMLDB_TYPE_CHAR, '32', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table block_behaviour_common_links.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for block_behaviour_common_links.
         if (!$dbman->table_exists($table)) {
@@ -340,7 +340,7 @@ function xmldb_block_behaviour_upgrade($oldversion) {
         $table->add_field('weight', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table block_behaviour_man_cmn_link.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for block_behaviour_man_cmn_link.
         if (!$dbman->table_exists($table)) {
@@ -375,7 +375,7 @@ function xmldb_block_behaviour_upgrade($oldversion) {
         $table->add_field('frequency', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table block_behaviour_lsa_links.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for block_behaviour_lsa_links.
         if (!$dbman->table_exists($table)) {
@@ -399,7 +399,7 @@ function xmldb_block_behaviour_upgrade($oldversion) {
         $table->add_field('psgon', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table block_behaviour_psg_log.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for block_behaviour_psg_log.
         if (!$dbman->table_exists($table)) {

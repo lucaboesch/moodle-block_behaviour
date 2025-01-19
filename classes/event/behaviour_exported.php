@@ -60,7 +60,7 @@ class behaviour_exported extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        $params = array('uid' => $this->userid, 'cid' => $this->courseid);
+        $params = ['uid' => $this->userid, 'cid' => $this->courseid];
         return get_string('exported', 'block_behaviour', $params);
     }
 
@@ -70,7 +70,7 @@ class behaviour_exported extends \core\event\base {
      * @return string
      */
     public function get_url() {
-        return new \moodle_url('/course/view.php', array('id' => $this->courseid));
+        return new \moodle_url('/course/view.php', ['id' => $this->courseid]);
     }
 
 }

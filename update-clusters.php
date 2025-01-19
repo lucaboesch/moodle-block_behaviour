@@ -49,7 +49,7 @@ require_capability('block/behaviour:view', $context);
 // Was script called with course id where plugin is not installed?
 if (!block_behaviour_is_installed($course->id)) {
 
-    redirect(new moodle_url('/course/view.php', array('id' => $courseid)));
+    redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
     die();
 }
 
@@ -60,7 +60,7 @@ $clusterdata = json_decode($clstrdata);
 $data = [];
 foreach ($clusterdata->clusterCoords as $cc) {
 
-    $data[] = (object) array(
+    $data[] = (object) [
         'courseid'     => $courseid,
         'userid'       => $userid,
         'coordsid'     => $clusterdata->coordsid,
@@ -69,8 +69,8 @@ foreach ($clusterdata->clusterCoords as $cc) {
         'clusternum'   => $cc->num,
         'centroidx'    => $cc->x,
         'centroidy'    => $cc->y,
-        'usegeometric' => $clusterdata->usegeometric
-    );
+        'usegeometric' => $clusterdata->usegeometric,
+    ];
 }
 // Regular clustering logging.
 $DB->insert_records('block_behaviour_clusters', $data);
@@ -82,7 +82,7 @@ reset($clusterdata->members);
 foreach ($clusterdata->members as $cluster) {
     foreach ($cluster as $member) {
 
-        $data[] = (object) array(
+        $data[] = (object) [
             'courseid'   => $courseid,
             'userid'     => $userid,
             'coordsid'   => $clusterdata->coordsid,
@@ -91,8 +91,8 @@ foreach ($clusterdata->members as $cluster) {
             'clusternum' => $member->num,
             'studentid'  => $member->id,
             'centroidx'  => $member->x,
-            'centroidy'  => $member->y
-        );
+            'centroidy'  => $member->y,
+        ];
     }
 }
 

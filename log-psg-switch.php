@@ -39,19 +39,19 @@ require_login($course);
 // Was script called with course id where plugin is not installed?
 if (!block_behaviour_is_installed($course->id)) {
 
-    redirect(new moodle_url('/course/view.php', array('id' => $course->id)));
+    redirect(new moodle_url('/course/view.php', ['id' => $course->id]));
     die();
 }
 
 $onoff = json_decode($data)->onoff;
 
 // Build new records.
-$data = array(
+$data = [
     'courseid' => $course->id,
     'userid' => $USER->id,
     'time' => time(),
     'psgon' => intval($onoff),
-);
+];
 $DB->insert_record('block_behaviour_psg_log', $data);
 
 die('Switch logged '.$data['time']);

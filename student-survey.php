@@ -87,7 +87,7 @@ if ($mform->is_cancelled()) {
                 $response = $fromform->{$k1}[$k2];
             }
 
-            $data[] = (object) array(
+            $data[] = (object) [
                 'courseid' => $course->id,
                 'studentid' => $USER->id,
                 'surveyid' => $sid,
@@ -95,7 +95,7 @@ if ($mform->is_cancelled()) {
                 'questionid' => $q->id,
                 'qorder' => $q->ordering,
                 'response' => $response,
-            );
+            ];
         }
         $DB->insert_records('block_behaviour_survey_rsps', $data);
     }
@@ -104,17 +104,17 @@ if ($mform->is_cancelled()) {
     die();
 
 } else { // Just show the form.
-    $PAGE->set_url('/blocks/behaviour/student-survey.php', array('id' => $course->id, 'sid' => $sid));
+    $PAGE->set_url('/blocks/behaviour/student-survey.php', ['id' => $course->id, 'sid' => $sid]);
     $PAGE->set_title(get_string('title', 'block_behaviour'));
 
     $PAGE->set_pagelayout('standard');
     $PAGE->set_heading($course->fullname);
 
-    $params = array(
+    $params = [
         'courseid' => $course->id,
         'studentid' => $USER->id,
         'surveyid' => $sid,
-    );
+    ];
     $records = $DB->get_records('block_behaviour_survey_rsps', $params);
 
     echo $OUTPUT->header();

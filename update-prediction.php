@@ -42,10 +42,10 @@ require_capability('block/behaviour:view', $context);
 // Was script called with course id where plugin is not installed?
 if (!block_behaviour_is_installed($course->id)) {
 
-    redirect(new moodle_url('/course/view.php', array('id' => $courseid)));
+    redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
     die();
 }
-$installed = $DB->get_record('block_behaviour_installed', array('courseid' => $courseid));
+$installed = $DB->get_record('block_behaviour_installed', ['courseid' => $courseid]);
 
 $userid = $USER->id;
 $pred = json_decode($data);

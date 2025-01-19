@@ -41,7 +41,7 @@ function block_behaviour_get_courses() {
              WHERE ctx.id in (SELECT distinct parentcontextid FROM {block_instances}
                                WHERE blockname = 'behaviour')
           ORDER BY c.sortorder";
-    return $DB->get_records_sql($sql, array('contextcourse' => CONTEXT_COURSE));
+    return $DB->get_records_sql($sql, ['contextcourse' => CONTEXT_COURSE]);
 }
 
 /**
@@ -85,18 +85,18 @@ function block_behaviour_get_course_info(&$course) {
                 continue;
             }
 
-            $courseinfo[] = array(
+            $courseinfo[] = [
                 'id'     => $cmid,
                 'entype' => $cm->modname,
                 'type'   => get_string('modulename', $cm->modname),
                 'name'   => $cm->name,
-                'sect'   => $sectionnum
-            );
+                'sect'   => $sectionnum,
+            ];
             $modids[$cmid] = $cmid;
         }
     }
 
-    return array($courseinfo, $modids);
+    return [$courseinfo, $modids];
 }
 
 /**
@@ -128,7 +128,7 @@ function block_behaviour_get_graph_scale($coordsid, &$table, $params) {
         $coordsid = $scl[$key]->coordsid;
     }
 
-    return array($scale, $coordsid);
+    return [$scale, $coordsid];
 }
 
 /**
@@ -162,11 +162,11 @@ function block_behaviour_get_nodes($coordsid, &$table, $params) {
     foreach ($records as $row) {
 
         if ($row->xcoord != 0 && $row->ycoord != 0) {
-            $nodes[$row->moduleid] = array(
+            $nodes[$row->moduleid] = [
                 'xcoord'  => $row->xcoord,
                 'ycoord'  => $row->ycoord,
                 'visible' => intval($row->visible),
-            );
+            ];
         }
         if (is_numeric($row->moduleid)) {
             $numnodes++;
@@ -176,7 +176,7 @@ function block_behaviour_get_nodes($coordsid, &$table, $params) {
         }
     }
 
-    return array($nodes, $numnodes);
+    return [$nodes, $numnodes];
 }
 
 /**
@@ -189,10 +189,10 @@ function block_behaviour_get_nodes($coordsid, &$table, $params) {
  */
 function block_behaviour_get_scale_and_node_data($coordsid, $userid, &$course) {
 
-    $params = array(
+    $params = [
         'courseid' => $course->id,
-        'userid'   => $userid
-    );
+        'userid'   => $userid,
+    ];
 
     $table = 'block_behaviour_scales';
     list($scale, $coordsid) = block_behaviour_get_graph_scale($coordsid, $table, $params);
@@ -200,7 +200,7 @@ function block_behaviour_get_scale_and_node_data($coordsid, $userid, &$course) {
     $table = 'block_behaviour_coords';
     list($nodes, $numnodes) = block_behaviour_get_nodes($coordsid, $table, $params);
 
-    return array($coordsid, $scale, $nodes, $numnodes);
+    return [$coordsid, $scale, $nodes, $numnodes];
 }
 
 /**
@@ -219,10 +219,10 @@ function block_behaviour_get_lord_scale_and_node_data($coordsid, $userid, &$cour
     if ($coordsid == 0) { // Fishing for data.
 
         // Get the scale data.
-        $params = array(
+        $params = [
             'courseid' => $course->id,
-            'iscustom' => $iscustom
-        );
+            'iscustom' => $iscustom,
+        ];
         list($scale, $coordsid) = block_behaviour_get_graph_scale($coordsid, $table, $params);
 
         if ($coordsid == 0 && $iscustom == 1) { // No custom graph to use, try system graph.
@@ -248,15 +248,15 @@ function block_behaviour_get_lord_scale_and_node_data($coordsid, $userid, &$cour
         }
     }
 
-    $params = array(
+    $params = [
         'courseid' => $course->id,
-        'changed' => $coordsid
-    );
+        'changed' => $coordsid,
+    ];
 
     $table = 'block_lord_coords';
     list($nodes, $numnodes) = block_behaviour_get_nodes($coordsid, $table, $params);
 
-    return array($coordsid, $scale, $nodes, $numnodes);
+    return [$coordsid, $scale, $nodes, $numnodes];
 }
 
 /**
@@ -273,10 +273,10 @@ function block_behaviour_get_lord_link_data($courseid, $coordsid) {
         return [];
     }
 
-    $params = array(
+    $params = [
         'courseid' => $courseid,
-        'coordsid' => $coordsid
-    );
+        'coordsid' => $coordsid,
+    ];
     $records = $DB->get_records('block_lord_links', $params);
 
     $links = [];
@@ -303,10 +303,10 @@ function block_behaviour_get_graph_data($coordid, $userid, &$course, &$mods, &$m
     $nodes = [];
     $links = [];
     $uselsa = 0;
-    $params = array(
+    $params = [
         'courseid' => $course->id,
-        'userid' => $userid
-    );
+        'userid' => $userid,
+    ];
 
     // Get the LORD integration options.
     $lord = $DB->get_record('block_behaviour_lord_options', $params);
@@ -400,9 +400,9 @@ function block_behaviour_get_log_data(&$nodes, &$course, &$globallogs) {
         reset($records);
     } else {
         // Get all the data records for this data set.
-        $records = $DB->get_records('block_behaviour_imported', array(
-            'courseid' => $course->id
-        ), 'userid, time');
+        $records = $DB->get_records('block_behaviour_imported', [
+            'courseid' => $course->id,
+        ], 'userid, time');
 
         $globallogs = $records;
     }
@@ -426,10 +426,10 @@ function block_behaviour_get_log_data(&$nodes, &$course, &$globallogs) {
         if (isset($nodes[$row->moduleid])) {
 
             $users[$row->userid] = $indx;
-            $logs[] = array(
+            $logs[] = [
                 'moduleId' => $row->moduleid,
-                'userId'   => $indx
-            );
+                'userId'   => $indx,
+            ];
         }
     }
 
@@ -442,7 +442,7 @@ function block_behaviour_get_log_data(&$nodes, &$course, &$globallogs) {
     // Handle case where plugin is used in new course with no records,
     // still requires enrolled students.
     if (count($records) == 0) {
-        $userinfo[] = array('id' => 0, 'realId' => 0);
+        $userinfo[] = ['id' => 0, 'realId' => 0];
 
     } else {
         // Query the DB for the student names.
@@ -489,14 +489,14 @@ function block_behaviour_get_log_data(&$nodes, &$course, &$globallogs) {
         // Build the user info array, keeping the sequential ids.
         $havenames = [];
         foreach ($users2 as $user) {
-            $userinfo[] = array(
+            $userinfo[] = [
                 'id' => $users[$user->id],
                 'realId' => $user->id,
                 'username' => $user->username,
                 'firstname' => $user->firstname,
                 'lastname' => $user->lastname,
-                'groupid' => isset($members[$user->id]) ? $members[$user->id] : -1
-            );
+                'groupid' => isset($members[$user->id]) ? $members[$user->id] : -1,
+            ];
             $havenames[$user->id] = 1;
         }
 
@@ -509,14 +509,14 @@ function block_behaviour_get_log_data(&$nodes, &$course, &$globallogs) {
             foreach ($users as $studentid => $fakeid) {
 
                 if (!isset($havenames[$studentid])) {
-                    $userinfo[] = array(
+                    $userinfo[] = [
                         'id' => $fakeid,
                         'realId' => $studentid,
                         'username' => $fakeid,
                         'firstname' => $fakeid,
                         'lastname' => '',
-                        'groupid' => -1
-                    );
+                        'groupid' => -1,
+                    ];
                 }
             }
         }
@@ -542,12 +542,12 @@ function block_behaviour_get_comment_data($coordsid, $clusterid, $userid, &$cour
         return $comments;
     }
 
-    $cmnts = $DB->get_records('block_behaviour_comments', array(
+    $cmnts = $DB->get_records('block_behaviour_comments', [
         'courseid'  => $course->id,
         'userid'    => $userid,
         'coordsid'  => $coordsid,
-        'clusterid' => $clusterid
-    ), 'commentid');
+        'clusterid' => $clusterid,
+    ], 'commentid');
 
     // Key comments by student/cluster id.
     foreach ($cmnts as $row) {
@@ -579,12 +579,12 @@ function block_behaviour_get_members($coordsid, $clusterid, $table, $userid, &$c
     $globalclusterid = $clusterid;
 
     // Get membership records.
-    $members = $DB->get_records($table, array(
+    $members = $DB->get_records($table, [
         'courseid'   => $course->id,
         'userid'     => $userid,
         'coordsid'   => $coordsid,
-        'clusterid'  => $clusterid
-    ), 'iteration, clusternum');
+        'clusterid'  => $clusterid,
+    ], 'iteration, clusternum');
 
     // Build members array for this clusterid.
     $data = [];
@@ -599,16 +599,16 @@ function block_behaviour_get_members($coordsid, $clusterid, $table, $userid, &$c
 
         // Manual clusters have no centroid columns.
         if (isset($member->centroidy)) {
-            $data[$member->iteration][$member->clusternum][] = array(
+            $data[$member->iteration][$member->clusternum][] = [
                 'id' => $member->studentid,
                 'x'  => $member->centroidx,
-                'y'  => $member->centroidy
-            );
+                'y'  => $member->centroidy,
+            ];
         } else {
-            $data[$member->iteration][$member->clusternum][] = array(
+            $data[$member->iteration][$member->clusternum][] = [
                 'id'  => $member->studentid,
-                'num' => $member->clusternum
-            );
+                'num' => $member->clusternum,
+            ];
         }
     }
 
@@ -644,13 +644,13 @@ function block_behaviour_check_got_all_mods(&$mods, &$nodes, &$modids) {
 
     foreach ($keys as $mid) {
         if (!isset($modids[$mid]) && is_numeric($mid)) {
-            $mods[] = array(
+            $mods[] = [
                 'id'   => $mid,
                 'type' => 'unknown',
                 'entype' => 'unknown',
                 'name' => 'unknown'.$mid,
-                'sect' => $sect
-            );
+                'sect' => $sect,
+            ];
         }
     }
 }
@@ -665,18 +665,18 @@ function block_behaviour_check_got_all_mods(&$mods, &$nodes, &$modids) {
 function block_behaviour_get_centroids(&$courseid, &$coordsid) {
     global $DB, $USER;
 
-    $cents = $DB->get_records('block_behaviour_centroids', array(
+    $cents = $DB->get_records('block_behaviour_centroids', [
         'courseid' => $courseid,
         'userid'   => $USER->id,
-        'coordsid' => $coordsid
-    ));
+        'coordsid' => $coordsid,
+    ]);
 
     $centroids = [];
     foreach ($cents as $cent) {
-        $centroids[$cent->studentid] = array(
+        $centroids[$cent->studentid] = [
             'x' => $cent->centroidx,
-            'y' => $cent->centroidy
-        );
+            'y' => $cent->centroidy,
+        ];
     }
 
     return $centroids;
@@ -701,7 +701,7 @@ function block_behaviour_update_student_centroid($courseid, $userid, $studentid,
     }
 
     // New DB table values.
-    $params = array(
+    $params = [
         'courseid'  => $courseid,
         'userid'    => $userid,
         'studentid' => $studentid,
@@ -710,8 +710,8 @@ function block_behaviour_update_student_centroid($courseid, $userid, $studentid,
         'totaly'    => $y,
         'numnodes'  => $n,
         'centroidx' => $x / $n,
-        'centroidy' => $y / $n
-    );
+        'centroidy' => $y / $n,
+    ];
     $DB->insert_record('block_behaviour_centroids', $params);
 }
 
@@ -729,7 +729,7 @@ function block_behaviour_update_centroids_and_centres($courseid, $userid, $coord
 
     // Get all student's access logs.
     $logs = $DB->get_records('block_behaviour_imported',
-        array('courseid' => $courseid), 'userid, time');
+        ['courseid' => $courseid], 'userid, time');
 
     if (count($logs) == 0) {
         return;
@@ -776,14 +776,14 @@ function block_behaviour_update_centroids_and_centres($courseid, $userid, $coord
         }
         $centre = $data[intval(count($data) / 2)];
 
-        $records[] = (object) array(
+        $records[] = (object) [
             'courseid'  => $courseid,
             'userid'    => $userid,
             'coordsid'  => $coordsid,
             'studentid' => $studentid,
             'centroidx' => $nodes[$centre]['xcoord'],
-            'centroidy' => $nodes[$centre]['ycoord']
-        );
+            'centroidy' => $nodes[$centre]['ycoord'],
+        ];
     }
 
     $DB->insert_records('block_behaviour_centres', $records);
@@ -861,10 +861,10 @@ function block_behaviour_get_participants($courseid, $roleid) {
         return user_get_participants($courseid, 0, 0, $roleid, 0, 0, []);
 
     } else { // Older versions of Moodle.
-        $params = array(
+        $params = [
             'courseid' => $courseid,
-            'roleid' => $roleid
-        );
+            'roleid' => $roleid,
+        ];
 
         if ($roleid <= 0) { // Get all participants for this course.
             $query = 'SELECT u.id, u.username, u.firstname, u.lastname
@@ -894,7 +894,7 @@ function block_behaviour_get_participants($courseid, $roleid) {
  */
 function block_behaviour_get_lang_strings() {
 
-    return array(
+    return [
         'cluster'       => get_string('cluster', 'block_behaviour'),
         'graph'         => get_string('graph', 'block_behaviour'),
         'numclusters'   => get_string('numclusters', 'block_behaviour'),
@@ -989,7 +989,7 @@ function block_behaviour_get_lang_strings() {
         'extraversion' => get_string('extraversion', 'block_behaviour'),
         'neuroticism' => get_string('neuroticism', 'block_behaviour'),
         'conscientiousness' => get_string('conscientiousness', 'block_behaviour'),
-    );
+    ];
 }
 
 /**
@@ -1010,34 +1010,34 @@ function block_behaviour_get_html_table($panelwidth, $legendwidth, $shownames, $
     // Navigation links.
     $cell0 = new html_table_cell(block_behaviour_get_nav_links($shownames, $uselsa));
     $cell0->colspan = 3;
-    $data[] = new html_table_row(array($cell0));
+    $data[] = new html_table_row([$cell0]);
 
     // Left side panel holds the student/teacher menu, animation controls, and cluster slider.
     $cell1 = new html_table_cell(
-        html_writer::div('', '', array('id' => "student-menu")).
-        html_writer::div('', '', array('id' => "anim-controls")).
-        html_writer::div('', '', array('id' => "cluster-slider"))
+        html_writer::div('', '', ['id' => "student-menu"]).
+        html_writer::div('', '', ['id' => "anim-controls"]).
+        html_writer::div('', '', ['id' => "cluster-slider"])
     );
     $cell1->attributes['width'] = $panelwidth.'px';
 
     // Right side panel hold the hierarchical legend and clustering log panel.
     $cell3 = new html_table_cell(
-        html_writer::div('', '', array('id' => "legend")).
-        html_writer::div('', '', array('id' => "log-panel", 'class' => 'form-inline inline'))
+        html_writer::div('', '', ['id' => "legend"]).
+        html_writer::div('', '', ['id' => "log-panel", 'class' => 'form-inline inline'])
     );
     $cell3->attributes['width'] = $legendwidth.'px';
 
     // First row with both panels, graph in between.
-    $data[] = new html_table_row(array(
+    $data[] = new html_table_row([
         $cell1,
-        new html_table_cell(html_writer::div('', '', array('id' => 'graph'))),
-        $cell3));
+        new html_table_cell(html_writer::div('', '', ['id' => 'graph'])),
+        $cell3, ]);
 
     // Time slider along bottom.
-    $cell = new html_table_cell(html_writer::div('', '', array('id' => "slider")));
+    $cell = new html_table_cell(html_writer::div('', '', ['id' => "slider"]));
     $cell->colspan = 3;
     $cell->attributes['height'] = '100px';
-    $data[] = new html_table_row(array($cell));
+    $data[] = new html_table_row([$cell]);
 
     $table->data = $data;
 
@@ -1095,11 +1095,11 @@ function block_behaviour_get_lsa_table(&$links, &$mods) {
 function block_behaviour_get_nav_links($shownames, $uselsa) {
     global $COURSE, $USER;
 
-    $params = array(
+    $params = [
         'id' => $COURSE->id,
         'names' => $shownames,
         'uselsa' => $uselsa,
-    );
+    ];
     $view = new moodle_url('/blocks/behaviour/view.php', $params);
     $replay = new moodle_url('/blocks/behaviour/replay.php', $params);
     $position = new moodle_url('/blocks/behaviour/position.php', $params);
@@ -1132,8 +1132,8 @@ function block_behaviour_get_nav_links($shownames, $uselsa) {
 function block_behaviour_get_summary_data(&$course) {
     global $DB;
 
-    $members = $DB->get_records('block_behaviour_members', array('courseid' => $course->id));
-    $manmembers = $DB->get_records('block_behaviour_man_members', array('courseid' => $course->id));
+    $members = $DB->get_records('block_behaviour_members', ['courseid' => $course->id]);
+    $manmembers = $DB->get_records('block_behaviour_man_members', ['courseid' => $course->id]);
 
     // Build membership data array.
     $mdata = [];
@@ -1191,7 +1191,7 @@ function block_behaviour_get_summary_data(&$course) {
  */
 function block_behaviour_get_summary_headings() {
 
-    return array(
+    return [
         'userid',
         'graphid',
         'analysisname',
@@ -1204,8 +1204,8 @@ function block_behaviour_get_summary_headings() {
         'recall',
         'fhalf',
         'f1',
-        'f2'
-    );
+        'f2',
+    ];
 }
 
 /**
@@ -1219,10 +1219,10 @@ function block_behaviour_get_summary_headings() {
 function block_behaviour_get_lord_graph_status($cid, $coordsid) {
     global $DB;
 
-    $params = array(
+    $params = [
         'courseid' => $cid,
         'coordsid' => $coordsid,
-    );
+    ];
     $record = $DB->get_record('block_lord_scales', $params);
 
     $islord = '';
@@ -1733,22 +1733,22 @@ function block_behaviour_get_surveys(&$course, $shownames) {
             'type' => 6,
             'surveyid' => $s->id,
         ];
-        $a = html_writer::tag('a', get_string('viewsurvey', 'block_behaviour'), array(
-            'href' => new moodle_url('#', $params)
-        ));
+        $a = html_writer::tag('a', get_string('viewsurvey', 'block_behaviour'), [
+            'href' => new moodle_url('#', $params),
+        ]);
         $row[] = new html_table_cell(html_writer::div($a, ''));
 
         $params['type'] = 4;
-        $a = html_writer::tag('a', get_string('edit', 'block_behaviour'), array(
-            'href' => new moodle_url('#', $params)
-        ));
+        $a = html_writer::tag('a', get_string('edit', 'block_behaviour'), [
+            'href' => new moodle_url('#', $params),
+        ]);
         $row[] = new html_table_cell(html_writer::div($a, ''));
 
         $params['type'] = 3;
         $params['deletesurvey'] = true;
-        $a = html_writer::tag('a', get_string('delete', 'block_behaviour'), array(
-            'href' => new moodle_url('#', $params)
-        ));
+        $a = html_writer::tag('a', get_string('delete', 'block_behaviour'), [
+            'href' => new moodle_url('#', $params),
+        ]);
         $row[] = new html_table_cell(html_writer::div($a, ''));
         $data[] = $row;
         $row = [];
@@ -1898,11 +1898,11 @@ function block_behaviour_get_survey_responses($course, $surveyid, $shownames) {
                 $options[$o->ordering] = $o->text;
             }
         }
-        $questions[$q->id] = array(
+        $questions[$q->id] = [
             'options' => $options,
             'rsps' => [],
             'qtype' => $q->qtype,
-        );
+        ];
         $thead[] = $q->ordering;
         $thead[] = $q->qtext;
         $csv .= $q->ordering . ',"' . $q->qtext . '",';
@@ -2181,7 +2181,7 @@ function block_behaviour_update_common_graph($cid, $tid = 0, $coordsid = 0, $clu
                                 }
                             }
 
-                            $commondata[] = (object) array(
+                            $commondata[] = (object) [
                                 'courseid' => $cid,
                                 'userid' => $tid,
                                 'coordsid' => $crdid,
@@ -2189,8 +2189,8 @@ function block_behaviour_update_common_graph($cid, $tid = 0, $coordsid = 0, $clu
                                 'iteration' => $iteration,
                                 'clusternum' => $cnum,
                                 'link' => $l,
-                                'weight' => $min
-                            );
+                                'weight' => $min,
+                            ];
                         }
                     }
                 }
@@ -2305,7 +2305,7 @@ function block_behaviour_get_ls_data($courseid, $surveyid, $scored) {
         $sequential = get_string('sequential', 'block_behaviour');
         $global = get_string('global', 'block_behaviour');
 
-        $lsc = array(
+        $lsc = [
             $active => 0,
             $reflective => 0,
             $sensing => 0,
@@ -2314,7 +2314,7 @@ function block_behaviour_get_ls_data($courseid, $surveyid, $scored) {
             $verbal => 0,
             $sequential => 0,
             $global => 0,
-        );
+        ];
         $n = 0;
         $m = 0;
 
@@ -2421,13 +2421,13 @@ function block_behaviour_get_bfi_data($courseid, $surveyid) {
         $neuroticism = get_string('neuroticism', 'block_behaviour');
         $openness = get_string('openness', 'block_behaviour');
 
-        $bfi = array(
+        $bfi = [
             $extraversion => 0,
             $agreeableness => 0,
             $conscientiousness => 0,
             $neuroticism => 0,
             $openness => 0,
-        );
+        ];
 
         foreach ($sr as $r) {
             switch ($r->qorder) {
@@ -2749,11 +2749,11 @@ function block_behaviour_get_ls_of_lo(&$course, $shownames) {
                 continue;
             }
 
-            $modules[$cmid] = array(
+            $modules[$cmid] = [
                 'type' => get_string('modulename', $cm->modname),
                 'name' => $cm->name,
-                'sect' => $sectionnum
-            );
+                'sect' => $sectionnum,
+            ];
         }
     }
 
@@ -3192,10 +3192,10 @@ class block_behaviour_exporter {
         $sql = $this->block_behaviour_get_sql($insql);
 
         // Paramaters for DB query.
-        $params = array(
+        $params = [
             'courseid'      => $courseid,
-            'contextmodule' => CONTEXT_MODULE
-        );
+            'contextmodule' => CONTEXT_MODULE,
+        ];
 
         // Get logs for currently enroled students.
         $inparams = array_merge($params, $inparams);
@@ -3238,10 +3238,10 @@ class block_behaviour_exporter {
         $sql = $this->block_behaviour_get_sql($insql);
 
         // Paramaters for DB query.
-        $params = array(
+        $params = [
             'courseid'      => $courseid,
-            'contextmodule' => CONTEXT_MODULE
-        );
+            'contextmodule' => CONTEXT_MODULE,
+        ];
 
         $inparams = array_merge($params, $inparams);
         $pastlogs = $DB->get_records_sql($sql, $inparams);
@@ -3285,18 +3285,18 @@ class block_behaviour_exporter {
                 // Web interface export.
                 if ($cm->has_view() && $cm->uservisible) {
 
-                    $courseinfo[$cmid] = array(
+                    $courseinfo[$cmid] = [
                         'type' => $cm->modname,
-                        'name' => $cm->name
-                    );
+                        'name' => $cm->name,
+                    ];
 
                 } else if ($cli && $cm->has_view() && ! $cm->uservisible) {
                     // CLI export.
 
-                    $courseinfo[$cmid] = array(
+                    $courseinfo[$cmid] = [
                         'type' => $cm->modname,
-                        'name' => $cm->name
-                    );
+                        'name' => $cm->name,
+                    ];
                 }
             }
         }
@@ -3310,27 +3310,27 @@ class block_behaviour_exporter {
 
             // Get module type and name from module id.
             if (! isset($courseinfo[$value->contextinstanceid])) {
-                $loginfo[] = array(
+                $loginfo[] = [
                     'modType' => 'unkown',
                     'modName' => $value->contextinstanceid,
                     'userId'  => $value->userid,
-                    'time'    => $value->timecreated
-                );
+                    'time'    => $value->timecreated,
+                ];
             } else {
                 $module = $courseinfo[$value->contextinstanceid];
 
-                $loginfo[] = array(
+                $loginfo[] = [
                     'modType' => $module['type'],
                     'modName' => $module['name'],
                     'userId'  => $value->userid,
-                    'time'    => $value->timecreated
-                );
+                    'time'    => $value->timecreated,
+                ];
             }
         }
 
         // Trigger a behaviour log exported event.
         $event = \block_behaviour\event\behaviour_exported::create
-            (array('context' => context_course::instance($courseid)));
+            (['context' => context_course::instance($courseid)]);
         $event->trigger();
 
         return $loginfo;
@@ -3358,8 +3358,8 @@ class block_behaviour_import_form extends moodleform {
 
         $mform = $this->_form; // Don't forget the underscore!
 
-        $attrs = array('id' => 'file-input');
-        $options = array('accepted_types' => 'application/json');
+        $attrs = ['id' => 'file-input'];
+        $options = ['accepted_types' => 'application/json'];
         $mform->addElement('filepicker', 'block_behaviour-import', '', $attrs, $options);
 
         $mform->addElement('html', '<br\>');
@@ -3432,12 +3432,12 @@ class block_behaviour_import_form extends moodleform {
             array_column($logs, 'timecreated'), SORT_ASC, $logs);
 
         // Update the course with the imported data.
-        $course = $DB->get_record('block_behaviour_installed', array('courseid' => $COURSE->id));
+        $course = $DB->get_record('block_behaviour_installed', ['courseid' => $COURSE->id]);
         $task = new \block_behaviour\task\increment_logs_schedule();
         $task->update_course($course, $logs);
 
         // Trigger a behaviour log imported event.
-        $event = \block_behaviour\event\behaviour_imported::create(array('context' => $context));
+        $event = \block_behaviour\event\behaviour_imported::create(['context' => $context]);
         $event->trigger();
 
         return get_string('goodfile', 'block_behaviour');
@@ -3488,11 +3488,11 @@ class block_behaviour_import_form extends moodleform {
 
             // Add data to DB array.
             if (isset($courseinfo[$type.'_'.$imp->modName])) {
-                $logs[] = (object) array(
+                $logs[] = (object) [
                     'contextinstanceid' => $courseinfo[$type.'_'.$imp->modName],
                     'userid'            => $imp->userId,
-                    'timecreated'       => $imp->time
-                );
+                    'timecreated'       => $imp->time,
+                ];
             }
         }
 
@@ -3554,11 +3554,11 @@ class block_behaviour_import_form extends moodleform {
                 $moduleid = $courseinfo[$modkey];
 
                 if ($moduleid) {
-                    $logs[] = (object) array(
+                    $logs[] = (object) [
                         'contextinstanceid' => $moduleid,
                         'userid'            => $userid,
-                        'timecreated'       => $time
-                    );
+                        'timecreated'       => $time,
+                    ];
                 }
             }
         }
@@ -3625,10 +3625,10 @@ class block_behaviour_export_form extends moodleform {
         $mform = $this->_form; // Don't forget the underscore!
 
         $clabel = get_string('exportcurlabel', 'block_behaviour').'&nbsp';
-        $mform->addElement('checkbox', 'current', '', $clabel, array('id' => "current-box"));
+        $mform->addElement('checkbox', 'current', '', $clabel, ['id' => "current-box"]);
 
         $plabel = get_string('exportpastlabel', 'block_behaviour');
-        $mform->addElement('checkbox', 'past', '', $plabel, array('id' => "past-box"));
+        $mform->addElement('checkbox', 'past', '', $plabel, ['id' => "past-box"]);
 
         $mform->addElement('html', '<br\>');
 
@@ -3746,7 +3746,7 @@ class block_behaviour_complete_exporter {
                 $module2 = ['type' => 'unknown', 'name' => 'unknown_'.$n++, 'sect' => 0];
             }
 
-            $links[] = array(
+            $links[] = [
                 'coordsid' => $r->coordsid,
                 'type1'    => $module1['type'],
                 'name1'    => $module1['name'],
@@ -3754,8 +3754,8 @@ class block_behaviour_complete_exporter {
                 'type2'    => $module2['type'],
                 'name2'    => $module2['name'],
                 'sect2'    => $module2['sect'],
-                'weight'   => $r->weight
-            );
+                'weight'   => $r->weight,
+            ];
         }
 
         return $links;
@@ -3777,14 +3777,14 @@ class block_behaviour_complete_exporter {
 
         foreach ($records as $r) {
 
-            $scales[] = array(
+            $scales[] = [
                 'coordsid'  => $r->coordsid,
                 'scale'     => $r->scale,
                 'iscustom'  => $r->iscustom,
                 'mindist'   => $r->mindist,
                 'maxdist'   => $r->maxdist,
-                'distscale' => $r->distscale
-            );
+                'distscale' => $r->distscale,
+            ];
         }
 
         return $scales;
@@ -3823,7 +3823,7 @@ class block_behaviour_complete_exporter {
                 $module = ['type' => 'unknown', 'name' => 'unknown_'.$n++, 'sect' => 0];
             }
 
-            $coords[] = array(
+            $coords[] = [
                 'changed' => $r->changed,
                 'type'    => $module['type'],
                 'name'    => $module['name'],
@@ -3831,7 +3831,7 @@ class block_behaviour_complete_exporter {
                 'xcoord'  => $r->xcoord,
                 'ycoord'  => $r->ycoord,
                 'visible' => intval($r->visible),
-            );
+            ];
         }
 
         return $coords;
@@ -3882,14 +3882,14 @@ class block_behaviour_complete_exporter {
                 $studyids[$r->studentid] = $studentid;
             }
 
-            $comments[] = array(
+            $comments[] = [
                 'userid'    => $studyid,
                 'coordsid'  => $r->coordsid,
                 'clusterid' => $r->clusterid,
                 'studentid' => $studentid,
                 'commentid' => $r->commentid,
-                'remark'    => $r->remark
-            );
+                'remark'    => $r->remark,
+            ];
         }
 
         return $comments;
@@ -3937,14 +3937,14 @@ class block_behaviour_complete_exporter {
                 $studyids[$r->studentid] = $studentid;
             }
 
-            $manmembers[] = array(
+            $manmembers[] = [
                 'userid'       => $studyid,
                 'coordsid'     => $r->coordsid,
                 'clusterid'    => $r->clusterid,
                 'iteration'    => $r->iteration,
                 'clusternum'   => $r->clusternum,
-                'studentid'    => $studentid
-            );
+                'studentid'    => $studentid,
+            ];
         }
 
         return $manmembers;
@@ -3982,15 +3982,15 @@ class block_behaviour_complete_exporter {
                 }
             }
 
-            $manclusters[] = array(
+            $manclusters[] = [
                 'userid'     => $studyid,
                 'coordsid'   => $r->coordsid,
                 'clusterid'  => $r->clusterid,
                 'iteration'  => $r->iteration,
                 'clusternum' => $r->clusternum,
                 'centroidx'  => $r->centroidx,
-                'centroidy'  => $r->centroidy
-            );
+                'centroidy'  => $r->centroidy,
+            ];
         }
 
         return $manclusters;
@@ -4038,7 +4038,7 @@ class block_behaviour_complete_exporter {
                 $studyids[$r->studentid] = $studentid;
             }
 
-            $members[] = array(
+            $members[] = [
                 'userid'     => $studyid,
                 'coordsid'   => $r->coordsid,
                 'clusterid'  => $r->clusterid,
@@ -4047,7 +4047,7 @@ class block_behaviour_complete_exporter {
                 'studentid'  => $studentid,
                 'centroidx'  => $r->centroidx,
                 'centroidy'  => $r->centroidy,
-            );
+            ];
         }
 
         return $members;
@@ -4085,7 +4085,7 @@ class block_behaviour_complete_exporter {
                 }
             }
 
-            $clusters[] = array(
+            $clusters[] = [
                 'userid'       => $studyid,
                 'coordsid'     => $r->coordsid,
                 'clusterid'    => $r->clusterid,
@@ -4094,7 +4094,7 @@ class block_behaviour_complete_exporter {
                 'centroidx'    => $r->centroidx,
                 'centroidy'    => $r->centroidy,
                 'usegeometric' => $r->usegeometric,
-            );
+            ];
         }
 
         return $clusters;
@@ -4142,13 +4142,13 @@ class block_behaviour_complete_exporter {
                 $studyids[$r->studentid] = $studentid;
             }
 
-            $centres[] = array(
+            $centres[] = [
                 'userid'    => $studyid,
                 'coordsid'  => $r->coordsid,
                 'studentid' => $studentid,
                 'centroidx' => $r->centroidx,
                 'centroidy' => $r->centroidy,
-            );
+            ];
         }
 
         return $centres;
@@ -4196,7 +4196,7 @@ class block_behaviour_complete_exporter {
                 $studyids[$r->studentid] = $studentid;
             }
 
-            $centroids[] = array(
+            $centroids[] = [
                 'userid'    => $studyid,
                 'coordsid'  => $r->coordsid,
                 'studentid' => $studentid,
@@ -4205,7 +4205,7 @@ class block_behaviour_complete_exporter {
                 'numnodes'  => $r->numnodes,
                 'centroidx' => $r->centroidx,
                 'centroidy' => $r->centroidy,
-            );
+            ];
         }
 
         return $centroids;
@@ -4243,11 +4243,11 @@ class block_behaviour_complete_exporter {
                 }
             }
 
-            $scales[] = array(
+            $scales[] = [
                 'userid'   => $studyid,
                 'coordsid' => $r->coordsid,
-                'scale'    => $r->scale
-            );
+                'scale'    => $r->scale,
+            ];
         }
 
         return $scales;
@@ -4302,7 +4302,7 @@ class block_behaviour_complete_exporter {
                 $module = ['type' => 'unknown', 'name' => 'unknown_'.$n++, 'sect' => 0];
             }
 
-            $coords[] = array(
+            $coords[] = [
                 'userid'  => $studyid,
                 'changed' => $r->changed,
                 'type'    => $module['type'],
@@ -4311,7 +4311,7 @@ class block_behaviour_complete_exporter {
                 'xcoord'  => $r->xcoord,
                 'ycoord'  => $r->ycoord,
                 'visible' => intval($r->visible),
-            );
+            ];
         }
 
         return $coords;
@@ -4361,12 +4361,12 @@ class block_behaviour_complete_exporter {
                 $module = ['type' => 'unknown', 'name' => 'unknown_'.$n++];
             }
 
-            $logs[] = array(
+            $logs[] = [
                 'type'   => $module['type'],
                 'name'   => $module['name'],
                 'userid' => $studyid,
-                'time'   => $time++
-            );
+                'time'   => $time++,
+            ];
         }
 
         return $logs;
@@ -4412,11 +4412,11 @@ class block_behaviour_complete_exporter {
 
                 if ($cm->has_view() && $cm->uservisible) {
 
-                    $courseinfo[$cmid] = array(
+                    $courseinfo[$cmid] = [
                         'type' => $cm->modname,
                         'name' => $cm->name,
-                        'sect' => $sectionnum
-                    );
+                        'sect' => $sectionnum,
+                    ];
                 }
             }
         }
@@ -4441,10 +4441,10 @@ class block_behaviour_settings_form extends moodleform {
         global $DB, $COURSE, $USER;
 
         // Get custom settings, if exist.
-        $params = array(
+        $params = [
             'courseid' => $COURSE->id,
-            'userid' => $USER->id
-        );
+            'userid' => $USER->id,
+        ];
         $record = $DB->get_record('block_behaviour_lord_options', $params);
 
         if ($record) {

@@ -42,7 +42,7 @@ require_capability('block/behaviour:view', $context);
 // Was script called with course id where plugin is not installed?
 if (!block_behaviour_is_installed($course->id)) {
 
-    redirect(new moodle_url('/course/view.php', array('id' => $courseid)));
+    redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
     die();
 }
 
@@ -52,12 +52,12 @@ if ($USER->id != intval($data[0]) || $courseid != intval($data[1])) {
     die('Bad data passed');
 }
 
-$params = array(
+$params = [
     'userid' => intval($data[0]),
     'courseid' => intval($data[1]),
     'coordsid' => intval($data[2]),
     'clusterid' => intval($data[3]),
-);
+];
 $DB->delete_records('block_behaviour_clusters', $params);
 $DB->delete_records('block_behaviour_members', $params);
 $DB->delete_records('block_behaviour_man_clusters', $params);

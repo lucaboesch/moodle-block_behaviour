@@ -46,7 +46,7 @@ require_capability('block/behaviour:view', $context);
 // Was script called with course id where plugin is not installed?
 if (!block_behaviour_is_installed($course->id)) {
 
-    redirect(new moodle_url('/course/view.php', array('id' => $courseid)));
+    redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
     die();
 }
 
@@ -54,13 +54,13 @@ $userid = $USER->id;
 $clusterdata = json_decode($clstrdata);
 
 // Delete any old data for this iteration, don't want duplicates.
-$params = array(
+$params = [
     'courseid'   => $courseid,
     'userid'     => $userid,
     'coordsid'   => $clusterdata->coordsid,
     'clusterid'  => $clusterdata->clusterId,
     'iteration'  => $clusterdata->iteration,
-);
+];
 $DB->delete_records('block_behaviour_man_clusters', $params);
 $DB->delete_records('block_behaviour_man_members', $params);
 $DB->delete_records('block_behaviour_man_cmn_link', $params);
@@ -69,7 +69,7 @@ $DB->delete_records('block_behaviour_man_cmn_link', $params);
 $data = [];
 foreach ($clusterdata->clusterCoords as $cc) {
 
-    $data[] = (object) array(
+    $data[] = (object) [
         'courseid'   => $courseid,
         'userid'     => $userid,
         'coordsid'   => $clusterdata->coordsid,
@@ -77,8 +77,8 @@ foreach ($clusterdata->clusterCoords as $cc) {
         'iteration'  => $clusterdata->iteration,
         'clusternum' => $cc->num,
         'centroidx'  => $cc->x,
-        'centroidy'  => $cc->y
-    );
+        'centroidy'  => $cc->y,
+    ];
 }
 // Regular clustering logging.
 $DB->insert_records('block_behaviour_man_clusters', $data);
@@ -89,15 +89,15 @@ reset($clusterdata->members);
 
 foreach ($clusterdata->members as $member) {
 
-    $data[] = (object) array(
+    $data[] = (object) [
         'courseid'   => $courseid,
         'userid'     => $userid,
         'coordsid'   => $clusterdata->coordsid,
         'clusterid'  => $clusterdata->clusterId,
         'iteration'  => $clusterdata->iteration,
         'clusternum' => $member->num,
-        'studentid'  => $member->id
-    );
+        'studentid'  => $member->id,
+    ];
 }
 
 $DB->insert_records('block_behaviour_man_members', $data);

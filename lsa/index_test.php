@@ -42,9 +42,9 @@ if (!block_behaviour_is_installed($course->id)) {
 }
 
 // Get all the data records for this data set.
-$records = $DB->get_records('block_behaviour_imported', array(
-    'courseid' => $course->id
-), 'userid, time');
+$records = $DB->get_records('block_behaviour_imported', [
+    'courseid' => $course->id,
+], 'userid, time');
 $obs = [];
 $unique = [];
 foreach ($records as $r) {
@@ -69,7 +69,7 @@ $config['nodeR'] = 10;
 $config['links'] = $sa->export_sign_result("allison_liker");
 
 // Set up the page.
-$PAGE->set_url('/blocks/behaviour/lsa/index.php', array('id' => $course->id));
+$PAGE->set_url('/blocks/behaviour/lsa/index.php', ['id' => $course->id]);
 $PAGE->set_title(get_string('title', 'block_behaviour'));
 
 // CSS.
@@ -77,7 +77,7 @@ $PAGE->requires->css('/blocks/behaviour/lsa/d3network.css');
 
 // JavaScript.
 //$PAGE->requires->js_call_amd('block_behaviour/d3', '');
-$PAGE->requires->js_init_call('d3network', array($config), true);
+$PAGE->requires->js_init_call('d3network', [$config], true);
 $PAGE->requires->js('/blocks/behaviour/lsa/d3network.js');
 $PAGE->requires->js('/blocks/behaviour/lsa/d3.v3.min.js');
 

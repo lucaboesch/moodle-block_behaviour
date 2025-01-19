@@ -91,17 +91,17 @@ class block_behaviour extends block_base {
         }
 
         // When the block is first installed.
-        if (!$DB->record_exists('block_behaviour_installed', array('courseid' => $COURSE->id))) {
+        if (!$DB->record_exists('block_behaviour_installed', ['courseid' => $COURSE->id])) {
 
             // ... create a record in the database.
-            $DB->insert_record('block_behaviour_installed', array(
+            $DB->insert_record('block_behaviour_installed', [
                 'courseid' => $COURSE->id,
-                'lastsync' => 0
-            ));
+                'lastsync' => 0,
+            ]);
         }
 
         // Incrementally process any new logs to ensure the data is current.
-        $course = $DB->get_record('block_behaviour_installed', array('courseid' => $COURSE->id));
+        $course = $DB->get_record('block_behaviour_installed', ['courseid' => $COURSE->id]);
         $task = new \block_behaviour\task\increment_logs_schedule();
         $task->update_course($course);
 
@@ -128,28 +128,28 @@ class block_behaviour extends block_base {
 
         // Link to the graphing/clustering stages.
         $this->content->text .= html_writer::tag('a', get_string("launchplugin", "block_behaviour"),
-            array('href' => new moodle_url('/blocks/behaviour/view.php', $navlinkparams)));
+            ['href' => new moodle_url('/blocks/behaviour/view.php', $navlinkparams)]);
         $this->content->text .= html_writer::empty_tag('br');
 
         // Link to the clustering replay stage.
         $this->content->text .= html_writer::tag('a', get_string("launchreplay", "block_behaviour"),
-            array('href' => new moodle_url('/blocks/behaviour/replay.php', $navlinkparams)));
+            ['href' => new moodle_url('/blocks/behaviour/replay.php', $navlinkparams)]);
         $this->content->text .= html_writer::empty_tag('br');
 
         // Link to module node positioning.
         $this->content->text .= html_writer::tag('a', get_string("launchconfiguration", "block_behaviour"),
-            array('href' => new moodle_url('/blocks/behaviour/position.php', $navlinkparams)));
+            ['href' => new moodle_url('/blocks/behaviour/position.php', $navlinkparams)]);
         $this->content->text .= html_writer::empty_tag('br');
 
         // Link to the documentation.
         $this->content->text .= html_writer::tag('a', get_string("docsanchor", "block_behaviour"),
-            array('href' => new moodle_url('/blocks/behaviour/documentation.php', $navlinkparams)));
+            ['href' => new moodle_url('/blocks/behaviour/documentation.php', $navlinkparams)]);
         $this->content->text .= html_writer::empty_tag('br');
 
         // Link to the delete data page, only for admins.
         if (has_capability('block/behaviour:export', $context)) {
             $this->content->text .= html_writer::tag('a', get_string("deldata", "block_behaviour"),
-                array('href' => new moodle_url('/blocks/behaviour/delete-data.php', $navlinkparams)));
+                ['href' => new moodle_url('/blocks/behaviour/delete-data.php', $navlinkparams)]);
             $this->content->text .= html_writer::empty_tag('br');
         }
 
@@ -160,18 +160,18 @@ class block_behaviour extends block_base {
                 $DB->record_exists('block_lord_scales', ['courseid' => $COURSE->id])) {
 
             $this->content->text .= html_writer::tag('a', get_string("settings", "block_behaviour"),
-                array('href' => new moodle_url('/blocks/behaviour/custom_settings.php', array(
-                    'id' => $COURSE->id
-                ))));
+                ['href' => new moodle_url('/blocks/behaviour/custom_settings.php', [
+                    'id' => $COURSE->id,
+                ]), ]);
             $this->content->text .= html_writer::empty_tag('br');
         }
 
         // Link to the clustering dashboard.
         $this->content->text .= html_writer::tag('a', get_string("dashanchor", "block_behaviour"),
-            array('href' => new moodle_url('/blocks/behaviour/dashboard.php', array(
+            ['href' => new moodle_url('/blocks/behaviour/dashboard.php', [
                 'id' => $COURSE->id,
                 'names' => $shownames,
-            ))));
+            ]), ]);
         $this->content->text .= html_writer::empty_tag('br');
         $this->content->text .= html_writer::empty_tag('br');
 
@@ -180,11 +180,11 @@ class block_behaviour extends block_base {
 
         // A non-displayed target for form submit, used by both import and export.
         $this->content->text .= html_writer::tag
-            ('iframe', '', array('style' => 'display:none', 'name' => 'target'));
+            ('iframe', '', ['style' => 'display:none', 'name' => 'target']);
 
         // Advanced export form.
-        $url = new moodle_url('/blocks/behaviour/export-all.php', array('courseid' => $COURSE->id));
-        $export = new block_behaviour_export_all_form($url, null, 'post', 'target', array('id' => "export-all-form"));
+        $url = new moodle_url('/blocks/behaviour/export-all.php', ['courseid' => $COURSE->id]);
+        $export = new block_behaviour_export_all_form($url, null, 'post', 'target', ['id' => "export-all-form"]);
         $this->content->text .= $export->render();
 
         // If user has no export capability, nothing else to show in block.
@@ -201,39 +201,39 @@ class block_behaviour extends block_base {
         $this->content->text .= html_writer::div(get_string("exportlogs", "block_behaviour"));
 
         // Export form.
-        $url = new moodle_url('/blocks/behaviour/export-web.php', array('courseid' => $COURSE->id));
-        $exform = new block_behaviour_export_form($url, null, 'post', 'target', array('id' => "export-form"));
+        $url = new moodle_url('/blocks/behaviour/export-web.php', ['courseid' => $COURSE->id]);
+        $exform = new block_behaviour_export_form($url, null, 'post', 'target', ['id' => "export-form"]);
         $this->content->text .= $exform->render();
 
         $this->content->text .= html_writer::empty_tag('br');
 
         // Import feature.
         $this->content->text .= html_writer::div(get_string("importlogs", "block_behaviour"));
-        $this->content->text .= html_writer::div('&nbsp', '', array('id' => 'import-text'));
+        $this->content->text .= html_writer::div('&nbsp', '', ['id' => 'import-text']);
 
         // Import form.
-        $url = new moodle_url('/course/view.php', array('id' => $COURSE->id));
-        $imform = new block_behaviour_import_form($url, null, 'post', 'target', array('id' => "import-form"));
+        $url = new moodle_url('/course/view.php', ['id' => $COURSE->id]);
+        $imform = new block_behaviour_import_form($url, null, 'post', 'target', ['id' => "import-form"]);
 
         // Form has been submitted, import the file and store the result.
         if ($imform->get_data()) {
 
             $returned = $imform->block_behaviour_import($context);
-            $result = $DB->get_record('block_behaviour_installed', array('courseid' => $COURSE->id));
-            $DB->update_record('block_behaviour_installed', (object) array(
+            $result = $DB->get_record('block_behaviour_installed', ['courseid' => $COURSE->id]);
+            $DB->update_record('block_behaviour_installed', (object) [
                 'id'           => $result->id,
                 'courseid'     => $result->courseid,
                 'lastsync'     => $result->lastsync,
-                'importresult' => $returned
-            ));
+                'importresult' => $returned,
+            ]);
         }
 
         // Display the form.
-        $imform->set_data(array('id' => $COURSE->id));
+        $imform->set_data(['id' => $COURSE->id]);
         $this->content->text .= $imform->render();
 
         // JavaScript to uncheck the boxes after export and to remove file name after import.
-        $out = array(
+        $out = [
             'url'       => (string) new moodle_url('/blocks/behaviour/get-import-result.php'),
             'courseid'  => $COURSE->id,
             'name'      => explode(' ', $COURSE->shortname)[0],
@@ -241,9 +241,9 @@ class block_behaviour extends block_base {
             'wrongfile' => get_string('wrongfile', 'block_behaviour'),
             'nofile'    => get_string('nofile', 'block_behaviour'),
             'sesskey'   => sesskey(),
-        );
+        ];
         $this->page->requires->js(new moodle_url('/blocks/behaviour/javascript/forms.js'));
-        $this->page->requires->js_init_call('init', array($out), true);
+        $this->page->requires->js_init_call('init', [$out], true);
 
         $this->content->footer = "";
         return $this->content;
@@ -256,7 +256,7 @@ class block_behaviour extends block_base {
      */
     public function applicable_formats() {
 
-        return array('all' => false, 'course-view' => true);
+        return ['all' => false, 'course-view' => true];
     }
 
     /**

@@ -30,64 +30,64 @@ function xmldb_block_behaviour_install() {
     global $DB;
 
     // Felder and Soloman ILS.
-    $params = array(
-        'title' => get_string('ilstitle', 'block_behaviour')
-    );
+    $params = [
+        'title' => get_string('ilstitle', 'block_behaviour'),
+    ];
     $sid = $DB->insert_record('block_behaviour_surveys', $params);
 
     $options = [];
 
     for ($i = 1; $i <= 44; $i++) {
-        $params = array(
+        $params = [
             'survey' => $sid,
             'qtype' => 'binary',
             'qtext' => get_string('ilsq' . $i, 'block_behaviour'),
-            'ordering' => $i
-        );
+            'ordering' => $i,
+        ];
         $qid = $DB->insert_record('block_behaviour_survey_qs', $params);
         for ($j = 0; $j < 2; $j++) {
-            $options[] = (object) array(
+            $options[] = (object) [
                 'question' => $qid,
                 'ordering' => $j,
-                'text' => get_string('ilsq' . $i . 'a' . $j, 'block_behaviour')
-            );
+                'text' => get_string('ilsq' . $i . 'a' . $j, 'block_behaviour'),
+            ];
         }
     }
     $DB->insert_records('block_behaviour_survey_opts', $options);
 
     // System Usability Scale.
-    $params = array(
-        'title' => get_string('sustitle', 'block_behaviour')
-    );
+    $params = [
+        'title' => get_string('sustitle', 'block_behaviour'),
+    ];
     $sid = $DB->insert_record('block_behaviour_surveys', $params);
 
     $questions = [];
 
     for ($i = 1; $i <= 10; $i++) {
-        $questions[] = (object) array(
+        $questions[] = (object) [
             'survey' => $sid,
             'qtype' => 'likert',
             'qtext' => get_string('susq' . $i, 'block_behaviour'),
-            'ordering' => $i
-        );
+            'ordering' => $i,
+        ];
     }
     $DB->insert_records('block_behaviour_survey_qs', $questions);
 
     // Big Five Inventory v.1.
-    $params = array(
-        'title' => get_string('bfi1title', 'block_behaviour')
-    );
+    $params = [
+        'title' => get_string('bfi1title', 'block_behaviour'),
+    ];
     $sid = $DB->insert_record('block_behaviour_surveys', $params);
 
     $questions = [];
 
     for ($i = 1; $i <= 44; $i++) {
-        $questions[] = (object) array(
+        $questions[] = (object) [
             'survey' => $sid,
             'qtype' => 'likert',
             'qtext' => get_string('bfi1q' . $i, 'block_behaviour'),
-            'ordering' => $i
-        );
+            'ordering' => $i,
+        ];
     }
     $DB->insert_records('block_behaviour_survey_qs', $questions);
 

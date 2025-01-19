@@ -42,12 +42,12 @@ require_capability('block/behaviour:view', $context);
 // Was script called with course id where plugin is not installed?
 if (!block_behaviour_is_installed($course->id)) {
 
-    redirect(new moodle_url('/course/view.php', array('id' => $course->id)));
+    redirect(new moodle_url('/course/view.php', ['id' => $course->id]));
     die();
 }
 
 // Trigger a behaviour analytics viewed event.
-$event = \block_behaviour\event\behaviour_viewed::create(array('context' => $context));
+$event = \block_behaviour\event\behaviour_viewed::create(['context' => $context]);
 $event->trigger();
 
 // Some values needed here.
@@ -88,9 +88,9 @@ if ($uselsa) {
     }
 
     // Get all the data records for this data set.
-    $records = $DB->get_records('block_behaviour_imported', array(
-        'courseid' => $course->id
-    ), 'userid, time');
+    $records = $DB->get_records('block_behaviour_imported', [
+        'courseid' => $course->id,
+    ], 'userid, time');
 
     // Get the Lag Sequence Analysis results for each student.
     foreach ($records as $r) {
@@ -185,11 +185,11 @@ if (count($nodes) == 0) {
         block_behaviour_get_log_data($nodes, $course, $logs);
 
     // When using LORD graph, there is no centroid data.
-    $params = array(
+    $params = [
         'courseid' => $course->id,
         'userid'   => $USER->id,
-        'coordsid' => $coordsid
-    );
+        'coordsid' => $coordsid,
+    ];
     if (!$uselsa && !$DB->record_exists('block_behaviour_centroids', $params)) {
         block_behaviour_update_centroids_and_centres($course->id, $USER->id, $coordsid, $nodes);
     }
@@ -234,7 +234,7 @@ if ($uselsa) {
 }
 
 // Combine all data for transfer to client.
-$out = array(
+$out = [
     'logs'        => $loginfo,
     'users'       => $userinfo,
     'groups'      => $groupnames,
@@ -263,18 +263,18 @@ $out = array(
     'showstudentnames' => $shownames,
     'uselsa' => $uselsa,
     'coordsid' => $coordsid,
-);
+];
 
 if ($debugcentroids) {
     $out['centroids'] = block_behaviour_get_centroids($course->id, $coordsid);
 }
 
 // Set up the page.
-$PAGE->set_url('/blocks/behaviour/view.php', array(
+$PAGE->set_url('/blocks/behaviour/view.php', [
     'id' => $course->id,
     'names' => $shownames,
     'uselsa' => $linkuselsa,
-));
+]);
 $PAGE->set_title(get_string('title', 'block_behaviour'));
 
 // CSS.
@@ -282,7 +282,7 @@ $PAGE->requires->css('/blocks/behaviour/javascript/noUiSlider/distribute/nouisli
 
 // JavaScript.
 $PAGE->requires->js_call_amd('block_behaviour/modules', 'init');
-$PAGE->requires->js_init_call('waitForModules', array($out), true);
+$PAGE->requires->js_init_call('waitForModules', [$out], true);
 $PAGE->requires->js('/blocks/behaviour/javascript/main.js');
 
 // Finish setting up page.

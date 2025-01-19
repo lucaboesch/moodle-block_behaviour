@@ -41,7 +41,7 @@ require_capability('block/behaviour:view', $context);
 // Was script called with course id where plugin is not installed?
 if (!block_behaviour_is_installed($course->id)) {
 
-    redirect(new moodle_url('/course/view.php', array('id' => $course->id)));
+    redirect(new moodle_url('/course/view.php', ['id' => $course->id]));
     die();
 }
 
@@ -60,7 +60,7 @@ foreach ($records as $r) {
         'survey' => $r->survey,
         'qtype' => $r->qtype,
         'qtext' => $r->qtext,
-        'ordering' => $r->ordering - 1
+        'ordering' => $r->ordering - 1,
     ];
     $DB->update_record('block_behaviour_survey_qs', $params);
 }

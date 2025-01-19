@@ -11,7 +11,7 @@ class Sequential_analysis {
     /**
      * @var array
      */
-    var $config_obs_array = array();
+    var $config_obs_array = [];
 
     /**
      * @var int 
@@ -57,17 +57,17 @@ class Sequential_analysis {
      * sequence frequency
      * @var array
      */
-    var $sf = array();
+    var $sf = [];
 
     /**
      * @var array
      */
-    var $pos_list = array();
+    var $pos_list = [];
 
     /**
      * @var array
      */
-    var $sf_pos_list = array();
+    var $sf_pos_list = [];
 
     /**
      * code_frequencies
@@ -83,12 +83,12 @@ class Sequential_analysis {
     /**
      * @var array
      */
-    var $position_frequency = array();
+    var $position_frequency = [];
 
     /**
      * @var array
      */
-    var $col_total = array();
+    var $col_total = [];
 
     /**
      * @param array $obs
@@ -134,16 +134,16 @@ class Sequential_analysis {
     function sa_convert_obs() {
 
         $obs = $this->obs;
-        $output = array();
+        $output = [];
 
         foreach ($obs as $k => $code) {
             if (is_array($code)) {
                 $output[] = $code;
             } else if ($code === ' ') {
-                $output[] = array();
+                $output[] = [];
             }
             else {
-                $output[] = array($code);
+                $output[] = [$code];
             }
         }
         $this->config_obs_array = $output;
@@ -207,7 +207,7 @@ class Sequential_analysis {
 
                 $last_event = $event;
 
-                $next_event = array();
+                $next_event = [];
                 $break_detect = false;
 
                 if ($i < count($config_obs_array) - ($lag - 1)) {
@@ -228,15 +228,15 @@ class Sequential_analysis {
                     }
                 }
 
-                $seq_array = array();
+                $seq_array = [];
                 if (count($next_event) > 0) {
-                    $seq_array = array($event);
+                    $seq_array = [$event];
                     $seq_name;
                     for ($ni = 0; $ni < count($next_event); $ni++) {
                         $n_event = $next_event[$ni];
 
                         $prev_seq = $seq_array;
-                        $seq_array = array();
+                        $seq_array = [];
                         for ($e = 0; $e < count($n_event); $e++) {
                             $event = $n_event[$e];
                             for ($p = 0; $p < count($prev_seq); $p++) {
@@ -290,7 +290,7 @@ class Sequential_analysis {
     function calc_position_frequency($seq_name) {
         foreach (explode('_', $seq_name) as $i => $code) {
             if (isset($this->position_frequency[$code]) === false) {
-                $this->position_frequency[$code] = array();
+                $this->position_frequency[$code] = [];
             }
             if (isset($this->position_frequency[$code][$i]) === false) {
                 $this->position_frequency[$code][$i] = 0;
@@ -326,7 +326,7 @@ class Sequential_analysis {
         foreach ($this->code_list as $i => $row_code) {
             $sf_total = 0;
 
-            $sf_table =  array();
+            $sf_table =  [];
 
             foreach ($this->lag_list as $col_code) {
                 $seq_name = $row_code . '_' . $col_code;
@@ -367,7 +367,7 @@ class Sequential_analysis {
             }
         
             if ($sf_total > 0) {
-                $pos_list = array();
+                $pos_list = [];
                 foreach ($row as $j => $f) {
                     if ($j === "total") {
                         continue;
@@ -433,9 +433,9 @@ class Sequential_analysis {
         $seq_f = $this->seq_f;
         $ns = $this->ns;
         
-        $sign_result = array();
+        $sign_result = [];
 
-        $z_table = array();
+        $z_table = [];
 
         foreach ($code_list as $row_code) {
 
@@ -444,7 +444,7 @@ class Sequential_analysis {
                 $cf = $code_f[$row_code];
             }
 
-            $z_row = array();
+            $z_row = [];
             foreach ($lag_list as $col_code) {
 
                 $seq_name = $row_code . '_' . $col_code;
@@ -481,9 +481,9 @@ class Sequential_analysis {
         $seq_f = $this->seq_f;
         $ns = $this->ns;
         
-        $sign_result = array();
+        $sign_result = [];
 
-        $z_table = array();
+        $z_table = [];
 
         foreach ($code_list as $row_code) {
 
@@ -492,7 +492,7 @@ class Sequential_analysis {
                 $cf = $code_f[$row_code];
             }
 
-            $z_row = array();
+            $z_row = [];
             foreach ($lag_list as $col_code) {
                 $seq_name = $row_code . '_' . $col_code;
 
@@ -531,9 +531,9 @@ class Sequential_analysis {
         $seq_f = $this->seq_f;
         $ns = $this->ns;
         
-        $sign_result = array();
+        $sign_result = [];
 
-        $z_table = array();
+        $z_table = [];
 
         foreach ($code_list as $row_code) {
 
@@ -542,7 +542,7 @@ class Sequential_analysis {
                 $cf = $code_f[$row_code];
             }
 
-            $z_row = array();
+            $z_row = [];
             foreach ($lag_list as $col_code) {
                 $seq_name = $row_code . '_' . $col_code;
 
@@ -610,9 +610,9 @@ class Sequential_analysis {
         $seq_f = $this->seq_f;
         $ns = $this->ns;
         
-        $sign_result = array();
+        $sign_result = [];
 
-        $z_table = array();
+        $z_table = [];
 
         foreach ($code_list as $row_code) {
 
@@ -621,7 +621,7 @@ class Sequential_analysis {
                 $cf = $code_f[$row_code];
             }
 
-            $z_row = array();
+            $z_row = [];
             foreach ($lag_list as $col_code) {
                 $seq_name = $row_code . '_' . $col_code;
 
@@ -661,22 +661,22 @@ class Sequential_analysis {
      * @return array
      */
     function export_sign_result($target_model = NULL) {
-        $export = array();
+        $export = [];
         foreach ($this->sign_result as $model => $results) {
             if (count($results) > 0) {
-                $ary = array();
+                $ary = [];
                 foreach ($results as $seq => $z) {
                     $seqs = explode('_', $seq);
                     $source = $seqs[0];
                     $target = $seqs[1];
                     $frequency = $this->sf[$source][$target];
-                    $ary[] = array(
+                    $ary[] = [
                         "source" => $source,
                         "target" => $target,
                         "value" => $z,
                         "label" => round($z, 2),
-                        "frequency" => $frequency
-                    );
+                        "frequency" => $frequency,
+                    ];
                 }
                 $export[$model] = $ary;
             }
@@ -687,7 +687,7 @@ class Sequential_analysis {
                 $export = $export[$target_model];
             }
             else {
-                $export = array();
+                $export = [];
             }
         }
         
@@ -696,7 +696,7 @@ class Sequential_analysis {
     
     function export_sign_result_csv($target_model = NULL) {
       $export = $this->export_sign_result($target_model);
-      $exportCSV = array();
+      $exportCSV = [];
       $exportCSV[] = 'source,target,label,value,frequency';
       foreach ($export as $item) {
         $exportCSV[] = $item['source'].','.$item['target'].','.$item['label'].','.$item['value'].','.$item['frequency'];
@@ -711,7 +711,7 @@ class Sequential_analysis {
     static function table_draw($table, $show_sig = false) {
         $html = '<table border="1">';
         
-        $thead_th = array();
+        $thead_th = [];
         
         $first_tr = true;
         $tbody = "<tbody>";

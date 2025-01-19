@@ -44,7 +44,7 @@ require_capability('block/behaviour:view', $context);
 // Was script called with course id where plugin is not installed?
 if (!block_behaviour_is_installed($course->id)) {
 
-    redirect(new moodle_url('/course/view.php', array('id' => $courseid)));
+    redirect(new moodle_url('/course/view.php', ['id' => $courseid]));
     die();
 }
 
@@ -55,14 +55,14 @@ $remark = json_decode($remdata);
 $remark->remark = str_replace('%amp;', '&', $remark->remark);
 
 // Simple DB table insertion.
-$DB->insert_record('block_behaviour_comments', (object) array(
+$DB->insert_record('block_behaviour_comments', (object) [
     'courseid'  => $courseid,
     'userid'    => $userid,
     'coordsid'  => $remark->coordsid,
     'clusterid' => $remark->clusterid,
     'studentid' => $remark->studentid,
     'commentid' => time(),
-    'remark'    => $remark->remark
-));
+    'remark'    => $remark->remark,
+]);
 
 die('Comments updated: '.$remark->remark.' '.$courseid.' '.$course->id);

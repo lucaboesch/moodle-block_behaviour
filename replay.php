@@ -41,13 +41,13 @@ require_capability('block/behaviour:view', $context);
 // Was script called with course id where plugin is not installed?
 if (!block_behaviour_is_installed($course->id)) {
 
-    redirect(new moodle_url('/course/view.php', array('id' => $course->id)));
+    redirect(new moodle_url('/course/view.php', ['id' => $course->id]));
     die();
 }
-$installed = $DB->get_record('block_behaviour_installed', array('courseid' => $course->id));
+$installed = $DB->get_record('block_behaviour_installed', ['courseid' => $course->id]);
 
 // Trigger a behaviour analytics viewed event.
-$event = \block_behaviour\event\behaviour_viewed::create(array('context' => $context));
+$event = \block_behaviour\event\behaviour_viewed::create(['context' => $context]);
 $event->trigger();
 
 // Some values needed here.
@@ -71,9 +71,9 @@ $isresearcher = false;
 if (get_config('block_behaviour', 'c_'.$course->id.'_p_'.$USER->id)) {
     $isresearcher = true;
 
-    $userids = $DB->get_records('block_behaviour_clusters', array(
-        'courseid' => $course->id
-    ), '', 'distinct userid');
+    $userids = $DB->get_records('block_behaviour_clusters', [
+        'courseid' => $course->id,
+    ], '', 'distinct userid');
 
     foreach ($userids as $user) {
         $users[] = $user->userid;
@@ -85,10 +85,10 @@ if (get_config('block_behaviour', 'c_'.$course->id.'_p_'.$USER->id)) {
 
 for ($i = 0; $i < count($users); $i++) {
 
-    $params = array(
+    $params = [
         'courseid' => $course->id,
         'userid' => $users[$i],
-    );
+    ];
 
     // Get all clustering data for this data set.
     $coordids = $DB->get_records('block_behaviour_clusters', $params, '', 'distinct coordsid');
@@ -113,7 +113,7 @@ for ($i = 0; $i < count($users); $i++) {
         list($logs, $userinfo) = block_behaviour_get_log_data($nodes, $course, $globallogs);
         block_behaviour_check_got_all_mods($mods, $nodes, $modids);
 
-        $replay[$dataset][$coordid] = array(
+        $replay[$dataset][$coordid] = [
             'mods'  => $mods,
             'nodes' => $nodes,
             'links' => $links,
@@ -122,14 +122,14 @@ for ($i = 0; $i < count($users); $i++) {
             'logs'  => $logs,
             'users' => $userinfo,
             'islsa' => $islsa,
-        );
+        ];
 
         // Get all clustering data for this data set.
-        $clusters = $DB->get_records('block_behaviour_clusters', array(
+        $clusters = $DB->get_records('block_behaviour_clusters', [
             'courseid' => $course->id,
             'userid'   => $users[$i],
-            'coordsid' => $coordid
-        ), 'clusterid, iteration, clusternum');
+            'coordsid' => $coordid,
+        ], 'clusterid, iteration, clusternum');
 
         // For each clustering run, get the necessary data.
         foreach ($clusters as $run) {
@@ -138,9 +138,9 @@ for ($i = 0; $i < count($users); $i++) {
             $users[$i], $course, $globalclusterid, $globalmembers);
 
             if (! isset($replay[$dataset][$coordid][$run->clusterid])) {
-                $replay[$dataset][$coordid][$run->clusterid] = array(
-                    'comments' => block_behaviour_get_comment_data($coordsid, $run->clusterid, $users[$i], $course)
-                );
+                $replay[$dataset][$coordid][$run->clusterid] = [
+                    'comments' => block_behaviour_get_comment_data($coordsid, $run->clusterid, $users[$i], $course),
+                ];
             }
             if (! isset($replay[$dataset][$coordid][$run->clusterid][$run->iteration])) {
                 $replay[$dataset][$coordid][$run->clusterid][$run->iteration] = [];
@@ -151,11 +151,11 @@ for ($i = 0; $i < count($users); $i++) {
                 $thesemembers = $members[$run->iteration][$run->clusternum];
             }
 
-            $replay[$dataset][$coordid][$run->clusterid][$run->iteration][$run->clusternum] = array(
+            $replay[$dataset][$coordid][$run->clusterid][$run->iteration][$run->clusternum] = [
                 'centroidx' => $run->centroidx,
                 'centroidy' => $run->centroidy,
-                'members'   => $thesemembers
-            );
+                'members'   => $thesemembers,
+            ];
         } // End for each clusters.
 
         unset($run);
@@ -165,11 +165,11 @@ for ($i = 0; $i < count($users); $i++) {
         $manual[$dataset][$coordid] = [];
 
         // Get all clustering data for this data set.
-        $clusters = $DB->get_records('block_behaviour_man_clusters', array(
+        $clusters = $DB->get_records('block_behaviour_man_clusters', [
             'courseid' => $course->id,
             'userid'   => $users[$i],
-            'coordsid' => $coordid
-        ), 'clusterid, iteration, clusternum');
+            'coordsid' => $coordid,
+        ], 'clusterid, iteration, clusternum');
 
         // For each clustering run, get the necessary data.
         foreach ($clusters as $run) {
@@ -189,11 +189,11 @@ for ($i = 0; $i < count($users); $i++) {
                 $thesemembers = $members[$run->iteration][$run->clusternum];
             }
 
-            $manual[$dataset][$coordid][$run->clusterid][$run->iteration][$run->clusternum] = array(
+            $manual[$dataset][$coordid][$run->clusterid][$run->iteration][$run->clusternum] = [
                 'centroidx' => $run->centroidx,
                 'centroidy' => $run->centroidy,
-                'members'   => $thesemembers
-            );
+                'members'   => $thesemembers,
+            ];
         } // End for each clusters.
     } // End for each coordsids.
 } // End for each user.
@@ -202,9 +202,9 @@ if (!get_config('block_behaviour', 'allowshownames')) {
     $shownames = get_config('block_behaviour', 'shownames') ? 1 : 0;
 }
 // Combine all data and send to client program.
-$out = array(
+$out = [
     'logs'           => [],
-    'users'          => [ array('id' => 0) ],
+    'users'          => [ ['id' => 0] ],
     'mods'           => [],
     'panelwidth'     => $panelwidth,
     'legendwidth'    => $legendwidth,
@@ -231,23 +231,23 @@ $out = array(
     'predictionscript' => (string) new moodle_url('/blocks/behaviour/update-prediction.php'),
     'showstudentnames' => $shownames,
     'predictionanalysis' => $installed->prediction,
-);
+];
 
 if ($debugcentroids) {
     $out['centroids'] = block_behaviour_get_centroids($course->id, $coordsid);
 }
 
 // Set up the page.
-$PAGE->set_url('/blocks/behaviour/replay.php', array(
+$PAGE->set_url('/blocks/behaviour/replay.php', [
     'id' => $course->id,
     'names' => $shownames,
-    'uselsa' => $uselsa
-));
+    'uselsa' => $uselsa,
+]);
 $PAGE->set_title(get_string('title', 'block_behaviour'));
 
 // JavaScript.
 $PAGE->requires->js_call_amd('block_behaviour/modules', 'init');
-$PAGE->requires->js_init_call('waitForModules', array($out), true);
+$PAGE->requires->js_init_call('waitForModules', [$out], true);
 $PAGE->requires->js('/blocks/behaviour/javascript/main.js');
 
 // Finish setting up page.

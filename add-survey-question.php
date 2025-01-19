@@ -41,23 +41,23 @@ require_capability('block/behaviour:view', $context);
 // Was script called with course id where plugin is not installed?
 if (!block_behaviour_is_installed($course->id)) {
 
-    redirect(new moodle_url('/course/view.php', array('id' => $course->id)));
+    redirect(new moodle_url('/course/view.php', ['id' => $course->id]));
     die();
 }
 
 // Decode any ampersands that may be present.
 $data['qtext'] = str_replace('%amp;', '&', $data['qtext']);
 
-$params = array(
+$params = [
     'survey' => intval($data['surveyid']),
     'qtype' => $data['qtype'],
     'qtext' => $data['qtext'],
     'ordering' => intval($data['qorder']),
-);
+];
 if (isset($data['questionid'])) {
     $params['id'] = intval($data['questionid']);
     $DB->update_record('block_behaviour_survey_qs', $params);
-    $DB->delete_records('block_behaviour_survey_opts', array('question' => $params['id']));
+    $DB->delete_records('block_behaviour_survey_opts', ['question' => $params['id']]);
     $id = $params['id'];
 } else {
     $id = $DB->insert_record('block_behaviour_survey_qs', $params);
@@ -69,7 +69,7 @@ if ($data['qtype'] == 'binary' || $data['qtype'] == 'custom' || $data['qtype'] =
         $out[] = (object) [
             'question' => $id,
             'ordering' => $k,
-            'text' => str_replace('%amp;', '&', $v)
+            'text' => str_replace('%amp;', '&', $v),
         ];
     }
 }

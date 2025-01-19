@@ -41,15 +41,15 @@ require_capability('block/behaviour:view', $context);
 // Was script called with course id where plugin is not installed?
 if (!block_behaviour_is_installed($course->id)) {
 
-    redirect(new moodle_url('/course/view.php', array('id' => $course->id)));
+    redirect(new moodle_url('/course/view.php', ['id' => $course->id]));
     die();
 }
 
 // Decode any ampersands that may be present.
 $data['title'] = str_replace('%amp;', '&', $data['title']);
 
-$id = $DB->insert_record('block_behaviour_surveys', (object) array(
-    'title' => $data['title']
-));
+$id = $DB->insert_record('block_behaviour_surveys', (object) [
+    'title' => $data['title'],
+]);
 
 die((string) $id);
