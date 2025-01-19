@@ -25,7 +25,7 @@
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
-    "less": "^3.9.0",
+    "less": "^4.2.1",
     "less-plugin-clean-css": "^1.5.1",
     "prettier": "^1.14.2",
     "replace-in-file": "^3.4.2",
